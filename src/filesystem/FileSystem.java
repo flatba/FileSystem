@@ -331,10 +331,14 @@ class FileSystem extends JFrame {
                     selectField.setText(filePath);
                 }else if (selected == JFileChooser.CANCEL_OPTION){
 //                    selectField.setToolTipText("キャンセルされました");
+                    BottomPanel.removeAll();
                     BottomPanel.add(new JLabel("キャンセルされました"));
+                    BottomPanel.updateUI();
                 }else if (selected == JFileChooser.ERROR_OPTION){
 //                    selectField.setText("エラー又は取消しがありました");
+                    BottomPanel.removeAll();
                     BottomPanel.add(new JLabel("エラー又は取消しがありました"));
+                    BottomPanel.updateUI();
                 }
             }
         });
@@ -343,7 +347,10 @@ class FileSystem extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(filePath == ""){
-                    JOptionPane.showMessageDialog(FileSystem.this, "ファイルが指定されていません。");
+//                    JOptionPane.showMessageDialog(FileSystem.this, "ファイルが指定されていません。");
+                    BottomPanel.removeAll();
+                    BottomPanel.add(new JLabel("ファイルが指定されていません"));
+                    BottomPanel.updateUI();
                 }else{
                     // File select dialog
                     ArrayList<PatientInformation> data;
@@ -370,7 +377,10 @@ class FileSystem extends JFrame {
                         patientInformationModel.setValueAt(info.getAge(), j, PatientInformation.COLUMN_AGE);
                     }
                     loadFieldTable.setModel(patientInformationModel);
-                    JOptionPane.showMessageDialog(FileSystem.this, "ファイルの読み込みが完了しました。");
+//                    JOptionPane.showMessageDialog(FileSystem.this, "ファイルの読み込みが完了しました。");
+                    BottomPanel.removeAll();
+                    BottomPanel.add(new JLabel("ファイルの読み込みが完了しました。"));
+                    BottomPanel.updateUI();
                 }
             }
         });
@@ -379,7 +389,10 @@ class FileSystem extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(filePath.equals("")){
-                    JOptionPane.showMessageDialog(FileSystem.this, "ファイルが指定されていません。");
+//                    JOptionPane.showMessageDialog(FileSystem.this, "ファイルが指定されていません。");
+                    BottomPanel.removeAll();
+                    BottomPanel.add(new JLabel("ファイルが指定されていません。"));
+                    BottomPanel.updateUI();
                 }else{
 
                     ArrayList dataList = new ArrayList<>();
@@ -390,7 +403,10 @@ class FileSystem extends JFrame {
                     }
                     fa.writeFile(filePath, dataList);
                     System.out.println("出力しました。");
-                    JOptionPane.showMessageDialog(FileSystem.this, "ファイルの出力が完了しました。");
+//                    JOptionPane.showMessageDialog(FileSystem.this, "ファイルの出力が完了しました。");
+                    BottomPanel.removeAll();
+                    BottomPanel.add(new JLabel("ファイルの出力が完了しました。"));
+                    BottomPanel.updateUI();
                 }
             }
         });
@@ -422,18 +438,29 @@ class FileSystem extends JFrame {
                     int selectionRow = loadFieldTable.getSelectedColumn();
                     System.out.print(selectionRow);
                     if( selectionRow < 0 ) {
-                        JOptionPane.showMessageDialog(FileSystem.this, "選択されていません。");
+//                        JOptionPane.showMessageDialog(FileSystem.this, "選択されていません。");
+                        BottomPanel.removeAll();
+                        BottomPanel.add(new JLabel("選択されていません。"));
+                        BottomPanel.updateUI();
                         return;
                     }
                     for (int i = selection.length - 1; i >= 0; i--) {
                         patientInformationModel.removeRow(loadFieldTable.convertRowIndexToModel(selection[i]));
                     }
+                    BottomPanel.removeAll();
+                    BottomPanel.add(new JLabel("選択されていた行を削除しました。"));
+                    BottomPanel.updateUI();
                 }else if(option == JOptionPane.NO_OPTION) {
                     // すべての列を削除
                     int loadFieldTableNUM = loadFieldTable.getRowCount();
                     for (int i = loadFieldTableNUM - 1; i >= 0; i--) {
                         patientInformationModel.removeRow(i);
                     }
+                    patientPanel.removeAll();
+                    patientPanel.updateUI();
+                    BottomPanel.removeAll();
+                    BottomPanel.add(new JLabel("リストをすべて削除しました。"));
+                    BottomPanel.updateUI();
                 }else if (option == JOptionPane.CLOSED_OPTION){
                     // 選択なしで×を押してダイアログ終了の処理
                 }
