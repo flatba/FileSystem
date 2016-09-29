@@ -83,7 +83,7 @@ class FileSystem extends JFrame {
     public JPanel patientPanel;
 
     // Array
-    public ArrayList<String> patientInformationArrTmp;
+    public ArrayList<PatientInformation> patientInformationArrTmp;
     public ArrayList<String> patientInformationArr;
 
     // Table
@@ -240,13 +240,17 @@ class FileSystem extends JFrame {
         return DialogPanelBase;
     }
 
+
     public void copy() {
-        ArrayList<PatientInformation> selectedInfo = new ArrayList<>();
-        selectedInfo.add(getSelectedTableRow());
+        ArrayList<PatientInformation> patientInformationArrTmp = new ArrayList<>();
+        patientInformationArrTmp.add(getSelectedTableRow());
     }
 
     public void paste() {
-
+//        System.out.println(patientInformationArr);
+//        DefaultTableModel model = (DefaultTableModel)loadFieldTable.getModel();
+//        model.addRow(patientInformationArrTmp.toArray());
+//        patientInformationArrTmp.clear();
     }
 
     public FileSystem(){
