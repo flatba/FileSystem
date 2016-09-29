@@ -54,10 +54,6 @@ class FileSystem extends JFrame {
     private JButton selectButton;
     private JButton load;
     private JButton save;
-    private JButton clear;
-    private JButton add;
-    private JButton update;
-    //    private JButton infoButton;
 
     // Item
     private JTextField id;
@@ -109,9 +105,7 @@ class FileSystem extends JFrame {
     }
 
     public void add(){
-
         JPanel DialogPanelBase = createDialog();
-
         int r = JOptionPane.showConfirmDialog(
             FileSystem.this, // オーナーウィンドウ
             DialogPanelBase, // メッセージ
@@ -119,25 +113,17 @@ class FileSystem extends JFrame {
             JOptionPane.OK_CANCEL_OPTION,	// オプション（ボタンの種類）
             JOptionPane.QUESTION_MESSAGE	// メッセージタイプ（アイコンの種類）
         );
-
         dataSet(true);
-
         }
 
     public void update(){
         JPanel DialogPanelBase = createDialog();
-
-        //PatientInformation info = getSelectedTableRow();
         int selectedRow = getSelectedRow();
         PatientInformation info = this.getTabledRowInfo(selectedRow);
-
-        System.out.println(info.toString());
-
         if(info == null) {
             JOptionPane.showMessageDialog(FileSystem.this, "選択されていません。");
             return;
         }else{
-
             id.setText(info.getId());
             name.setText(info.getName());
             if(info.getSex().equals("男")){
@@ -150,7 +136,6 @@ class FileSystem extends JFrame {
             birthday.setText(info.getBirthday());
             age.setText(info.getAge());
         }
-
         // JFrame, JDialog
         int r = JOptionPane.showConfirmDialog(
             FileSystem.this, // オーナウィンドウ
@@ -159,9 +144,7 @@ class FileSystem extends JFrame {
             JOptionPane.OK_CANCEL_OPTION,	// オプション（ボタンの種類）
             JOptionPane.QUESTION_MESSAGE	// メッセージタイプ（アイコンの種類）
         );
-
         dataSet(false);
-
     }
 
     private void dataSet(boolean check) {
@@ -173,8 +156,6 @@ class FileSystem extends JFrame {
             JOptionPane.showMessageDialog(this, "性別を選択してください。");
             return;
         }
-
-        int row = 0;
         if(check == false){ // update
             int selectedRow = loadFieldTable.getSelectedRow();
             // ﾃﾞｰﾀの反映
@@ -185,8 +166,6 @@ class FileSystem extends JFrame {
             loadFieldTable.setValueAt(age.getText(), selectedRow, 4);
         }else{ //add
             int rowCount = loadFieldTable.getRowCount();
-            row = rowCount + 1;
-
             // ﾃﾞｰﾀの反映
             ArrayList<String> ret = new ArrayList<>();
             ret.add(id.getText());
@@ -194,15 +173,9 @@ class FileSystem extends JFrame {
             ret.add(sex);
             ret.add(birthday.getText().replaceAll("-", "/"));
             ret.add(age.getText());
-
             DefaultTableModel model = (DefaultTableModel)loadFieldTable.getModel();
             model.addRow(ret.toArray());
-
         }
-
-
-
-
     }
 
     private JPanel createDialog() {
@@ -289,21 +262,12 @@ class FileSystem extends JFrame {
         TopPanel.add(charCode);
         TopPanel.add(patientPanel);
 
-        // First Button
         load = new JButton("読み込み");
         save = new JButton("保存");
         ButtonPanel1.add(load);
         ButtonPanel1.add(save);
-//        // Second Button
-//        add = new JButton("追加");
-//        update = new JButton("編集");
-//        clear = new JButton("削除");
-//        ButtonPanel2.add(add);
-//        ButtonPanel2.add(update);
-//        ButtonPanel2.add(clear);
 
         TopPanel.add(ButtonPanel1);
-//        TopPanel.add(ButtonPanel2);
         // Top Panelの設定-------------------------------------------------------
 
         // Center Panelの設定----------------------------------------------------
@@ -524,14 +488,14 @@ class FileSystem extends JFrame {
         setVisible(true);
 
     }
-
+    // 行番号の取得
     private int getSelectedRow() {
         return loadFieldTable.getSelectedRow();
     }
 
+    // 指定した行の情報を取得する
     private PatientInformation getTabledRowInfo(int row) {
         PatientInformation ret = null;
-
         if(row >= 0) {
             ret = new PatientInformation();
             ret.setId((String)loadFieldTable.getValueAt(row, PatientInformation.COLUMN_ID));
@@ -540,38 +504,18 @@ class FileSystem extends JFrame {
             ret.setBirthday((String)loadFieldTable.getValueAt(row, PatientInformation.COLUMN_BIRTHDAY));
             ret.setAge((String)loadFieldTable.getValueAt(row, PatientInformation.COLUMN_AGE));
         }
-
         return ret;
     }
 
-    // 選択している行の値を返す
+    // 選択している行を含んで行の情報を取得する
     private PatientInformation getSelectedTableRow() {
-//        PatientInformation ret = null;
-//
-//        int selectedRow = loadFieldTable.getSelectedRow();
-//        if(selectedRow >= 0) {
-//            ret = new PatientInformation();
-//            ret.setId((String)loadFieldTable.getValueAt(selectedRow, PatientInformation.COLUMN_ID));
-//            ret.setName((String)loadFieldTable.getValueAt(selectedRow, PatientInformation.COLUMN_NAME));
-//            ret.setSex((String)loadFieldTable.getValueAt(selectedRow, PatientInformation.COLUMN_SEX));
-//            ret.setBirthday((String)loadFieldTable.getValueAt(selectedRow, PatientInformation.COLUMN_BIRTHDAY));
-//            ret.setAge((String)loadFieldTable.getValueAt(selectedRow, PatientInformation.COLUMN_AGE));
-//        }
-//
-//        return ret;
         return getTabledRowInfo(getSelectedRow());
     }
 
-    // ﾃｰﾌﾞﾙにあるすべての値を行ごとに取得して返す
+    // ﾃｰﾌﾞﾙにあるすべての情報を行ごとに取得して返す
     private ArrayList<PatientInformation> getTableItems() {
         ArrayList<PatientInformation> ret = new ArrayList<>();
         for(int row = 0; row < loadFieldTable.getRowCount(); row++) {
-//            PatientInformation info = new PatientInformation();
-//            info.setId((String)loadFieldTable.getValueAt(row, PatientInformation.COLUMN_ID));
-//            info.setName((String)loadFieldTable.getValueAt(row, PatientInformation.COLUMN_NAME));
-//            info.setSex((String)loadFieldTable.getValueAt(row, PatientInformation.COLUMN_SEX));
-//            info.setBirthday((String)loadFieldTable.getValueAt(row, PatientInformation.COLUMN_BIRTHDAY));
-//            info.setAge((String)loadFieldTable.getValueAt(row, PatientInformation.COLUMN_AGE));
             PatientInformation info = getTabledRowInfo(row);
             ret.add(info);
         }
