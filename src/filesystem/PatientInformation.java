@@ -88,6 +88,4 @@ public class PatientInformation {
 
         return sb.toString();
     }
-
-
 }
