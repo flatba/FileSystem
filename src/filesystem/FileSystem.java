@@ -64,6 +64,7 @@ class FileSystem extends JFrame {
     public String filePath = "";
     public int row;
     public int comboData;
+    private JTextField date;
 
     // Label
     public JLabel patientInformation;
@@ -185,26 +186,29 @@ class FileSystem extends JFrame {
         JPanel patientInformationPanelField = new JPanel();
 
         DialogPanel.setLayout(new GridLayout(1, 2));
-        patientInformationPanelItem.setLayout(new GridLayout(5,1));
-        patientInformationPanelField.setLayout(new GridLayout(5,1));
+        patientInformationPanelItem.setLayout(new GridLayout(6,1));
+        patientInformationPanelField.setLayout(new GridLayout(6,1));
 
         JLabel lId = new JLabel("患者ID");
         JLabel lName = new JLabel("氏名");
         JLabel lSex = new JLabel("性別");
         JLabel lBirthday = new JLabel("生年月日");
         JLabel lAge = new JLabel("年齢");
+        JLabel lDate = new JLabel("追加日");
 
         lId.setHorizontalAlignment(SwingConstants.CENTER);
         lName.setHorizontalAlignment(SwingConstants.CENTER);
         lSex.setHorizontalAlignment(SwingConstants.CENTER);
         lBirthday.setHorizontalAlignment(SwingConstants.CENTER);
         lAge.setHorizontalAlignment(SwingConstants.CENTER);
+        lDate.setHorizontalAlignment(SwingConstants.CENTER);
 
         patientInformationPanelItem.add(lId);
         patientInformationPanelItem.add(lName);
         patientInformationPanelItem.add(lSex);
         patientInformationPanelItem.add(lBirthday);
         patientInformationPanelItem.add(lAge);
+        patientInformationPanelItem.add(lDate);
 
         id = new JTextField("", 20);
         patientInformationPanelField.add(id);
@@ -224,6 +228,8 @@ class FileSystem extends JFrame {
         patientInformationPanelField.add(birthday);
         age = new JTextField("", 20);
         patientInformationPanelField.add(age);
+        date = new JTextField("", 20);
+        patientInformationPanelField.add(date);
 
         DialogPanel.add(patientInformationPanelItem);
         DialogPanel.add(patientInformationPanelField);
@@ -243,7 +249,6 @@ class FileSystem extends JFrame {
         JPanel TopPanel = new JPanel();
         patientPanel = new JPanel();
         JPanel ButtonPanel1 = new JPanel();
-        JPanel ButtonPanel2 = new JPanel();
         TopPanel.setPreferredSize(new Dimension(600, 150));
         patientPanel.setPreferredSize(new Dimension(500, 80));
         patientPanel.setBackground(new Color(232,226,232)); // set Color
@@ -309,7 +314,7 @@ class FileSystem extends JFrame {
         // 各Panelの表示---------------------------------------------------------
 
         // カラム設定------------------------------------------------------------
-        final String[] columnNames = {"患者ID", "氏名", "性別", "生年月日", "年齢"};
+        final String[] columnNames = {"患者ID", "氏名", "性別", "生年月日", "年齢", "追加日"};
         patientInformationModel = new DefaultTableModel(columnNames, 0);
         loadFieldTable.setModel(patientInformationModel);
         // カラム設定------------------------------------------------------------
@@ -375,6 +380,7 @@ class FileSystem extends JFrame {
                         patientInformationModel.setValueAt(info.getSex(), j, PatientInformation.COLUMN_SEX);
                         patientInformationModel.setValueAt(info.getBirthday(), j, PatientInformation.COLUMN_BIRTHDAY);
                         patientInformationModel.setValueAt(info.getAge(), j, PatientInformation.COLUMN_AGE);
+                        patientInformationModel.setValueAt(info.getDate(), j, PatientInformation.COLUMN_DATE);
                     }
                     loadFieldTable.setModel(patientInformationModel);
 //                    JOptionPane.showMessageDialog(FileSystem.this, "ファイルの読み込みが完了しました。");
