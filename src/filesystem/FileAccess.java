@@ -48,6 +48,7 @@ public class FileAccess {
                 info.setSex(columns[PatientInformation.COLUMN_SEX]);
                 info.setBirthday(columns[PatientInformation.COLUMN_BIRTHDAY]);
                 info.setAge(columns[PatientInformation.COLUMN_AGE]);
+                info.setDate(columns[PatientInformation.COLUMN_DATE]);
                 columnsArr.add(info);
             }
 

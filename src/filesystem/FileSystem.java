@@ -309,7 +309,7 @@ class FileSystem extends JFrame {
         // 各Panelの表示---------------------------------------------------------
 
         // カラム設定------------------------------------------------------------
-        final String[] columnNames = {"患者ID", "氏名", "性別", "生年月日", "年齢"};
+        final String[] columnNames = {"患者ID", "氏名", "性別", "生年月日", "年齢", "追加日"};
         patientInformationModel = new DefaultTableModel(columnNames, 0);
         loadFieldTable.setModel(patientInformationModel);
         // カラム設定------------------------------------------------------------
@@ -375,6 +375,7 @@ class FileSystem extends JFrame {
                         patientInformationModel.setValueAt(info.getSex(), j, PatientInformation.COLUMN_SEX);
                         patientInformationModel.setValueAt(info.getBirthday(), j, PatientInformation.COLUMN_BIRTHDAY);
                         patientInformationModel.setValueAt(info.getAge(), j, PatientInformation.COLUMN_AGE);
+                        patientInformationModel.setValueAt(info.getDate(), j, PatientInformation.COLUMN_DATE);
                     }
                     loadFieldTable.setModel(patientInformationModel);
 //                    JOptionPane.showMessageDialog(FileSystem.this, "ファイルの読み込みが完了しました。");
