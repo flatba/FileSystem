@@ -60,13 +60,21 @@ public class PatientInformation {
         this.age = age;
     }
 
+<<<<<<< HEAD
     public String getDate() {
+=======
+    public String getDate(){
+>>>>>>> master
         return date;
     }
     public void setDate(String date) {
         this.date = date;
     }
 
+<<<<<<< HEAD
+=======
+    // CSVフォーマットで返す
+>>>>>>> master
     public String convertCsvFormat() {
         StringBuilder sb = new StringBuilder();
         sb.append(getId());
@@ -84,6 +92,7 @@ public class PatientInformation {
         return sb.toString();
     }
 
+    // 文字列として返す
     public String patientToString() {
         StringBuilder sb = new StringBuilder();
         sb.append("患者ID：");
@@ -98,6 +107,10 @@ public class PatientInformation {
         sb.append(getAge()).append("\n　");
         sb.append("追加日：");
         sb.append(getDate()).append("\n　");
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 
         return sb.toString();
     }
