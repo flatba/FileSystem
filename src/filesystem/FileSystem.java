@@ -136,6 +136,7 @@ class FileSystem extends JFrame {
             }
             birthday.setText(info.getBirthday());
             age.setText(info.getAge());
+            date.setText(info.getAge());
         }
         // JFrame, JDialog
         int r = JOptionPane.showConfirmDialog(
@@ -165,8 +166,8 @@ class FileSystem extends JFrame {
             loadFieldTable.setValueAt(sex, selectedRow, 2);
             loadFieldTable.setValueAt(birthday.getText().replaceAll("-", "/"), selectedRow, 3);
             loadFieldTable.setValueAt(age.getText(), selectedRow, 4);
+            loadFieldTable.setValueAt(date.getText(), selectedRow, 5);
         }else{ //add
-            int rowCount = loadFieldTable.getRowCount();
             // ﾃﾞｰﾀの反映
             ArrayList<String> ret = new ArrayList<>();
             ret.add(id.getText());
@@ -174,6 +175,7 @@ class FileSystem extends JFrame {
             ret.add(sex);
             ret.add(birthday.getText().replaceAll("-", "/"));
             ret.add(age.getText());
+            ret.add(date.getText());
             DefaultTableModel model = (DefaultTableModel)loadFieldTable.getModel();
             model.addRow(ret.toArray());
         }
@@ -536,6 +538,7 @@ class FileSystem extends JFrame {
             ret.setSex((String)loadFieldTable.getValueAt(row, PatientInformation.COLUMN_SEX));
             ret.setBirthday((String)loadFieldTable.getValueAt(row, PatientInformation.COLUMN_BIRTHDAY));
             ret.setAge((String)loadFieldTable.getValueAt(row, PatientInformation.COLUMN_AGE));
+            ret.setDate((String)loadFieldTable.getValueAt(row, PatientInformation.COLUMN_DATE));
         }
         return ret;
     }
