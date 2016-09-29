@@ -240,7 +240,6 @@ class FileSystem extends JFrame {
         return DialogPanelBase;
     }
 
-
     public void copy() {
         ArrayList<PatientInformation> patientInformationArrTmp = new ArrayList<>();
         patientInformationArrTmp.add(getSelectedTableRow());
