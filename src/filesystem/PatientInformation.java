@@ -101,7 +101,6 @@ public class PatientInformation {
         sb.append("追加日：");
         sb.append(getDate()).append("\n　");
 
-
         return sb.toString();
     }
 

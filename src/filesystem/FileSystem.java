@@ -240,6 +240,15 @@ class FileSystem extends JFrame {
         return DialogPanelBase;
     }
 
+    public void copy() {
+        ArrayList<PatientInformation> selectedInfo = new ArrayList<>();
+        selectedInfo.add(getSelectedTableRow());
+    }
+
+    public void paste() {
+
+    }
+
     public FileSystem(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("ファイルの読み書き");
@@ -291,13 +300,17 @@ class FileSystem extends JFrame {
         JPopupMenu popup;
         popup = new JPopupMenu();
         JMenuItem addMenuItem = new JMenuItem("追加");
-//        JMenuItem copyMenuItem = new JMenuItem("コピー");
+        JMenuItem copyMenuItem = new JMenuItem("コピー");
         JMenuItem updateMenuItem = new JMenuItem("編集");
+        JMenuItem pasteMenuItem = new JMenuItem("貼り付け");
         JMenuItem deleteMenuItem = new JMenuItem("削除");
 
         popup.add(addMenuItem);
-//        popup.add(copyMenuItem);
+        popup.addSeparator();
+        popup.add(copyMenuItem);
         popup.add(updateMenuItem);
+        popup.add(pasteMenuItem);
+        popup.addSeparator();
         popup.add(deleteMenuItem);
         // Center Panelの設定----------------------------------------------------
 
@@ -426,6 +439,26 @@ class FileSystem extends JFrame {
             }
         });
 
+        copyMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                copy();
+                BottomPanel.removeAll();
+                BottomPanel.add(new JLabel("選択された行をコピーしました。"));
+                BottomPanel.updateUI();
+            }
+        });
+
+        pasteMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                paste();
+                BottomPanel.removeAll();
+                BottomPanel.add(new JLabel("まだ実装されていない機能です。"));
+                BottomPanel.updateUI();
+            }
+        });
+
         deleteMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -456,7 +489,7 @@ class FileSystem extends JFrame {
                         patientInformationModel.removeRow(loadFieldTable.convertRowIndexToModel(selection[i]));
                     }
                     BottomPanel.removeAll();
-                    BottomPanel.add(new JLabel("選択されていた行を削除しました。"));
+                    BottomPanel.add(new JLabel("選択した行を削除しました。"));
                     BottomPanel.updateUI();
                 }else if(option == JOptionPane.NO_OPTION) {
                     // すべての列を削除
@@ -540,6 +573,7 @@ class FileSystem extends JFrame {
             ret.setAge((String)loadFieldTable.getValueAt(row, PatientInformation.COLUMN_AGE));
             ret.setDate((String)loadFieldTable.getValueAt(row, PatientInformation.COLUMN_DATE));
         }
+        System.out.println(ret);
         return ret;
     }
 
