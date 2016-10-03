@@ -246,6 +246,7 @@ class FileSystem extends JFrame {
     }
 
     public void paste() {
+        // 選択行に上書き or 新たに行を追加
 //        System.out.println(patientInformationArr);
 //        DefaultTableModel model = (DefaultTableModel)loadFieldTable.getModel();
 //        model.addRow(patientInformationArrTmp.toArray());
@@ -383,6 +384,16 @@ class FileSystem extends JFrame {
 
                     data = new ArrayList();
                     data = fa.readFile(filePath, comboData); // filePathを入れるとcolumsArrが返ってくる
+
+                    // convertXmlFormat
+                    StringBuilder convertXmlData = new StringBuilder();
+                    convertXmlData = fa.convertXmlFormat(filePath, comboData);
+                    System.out.println(convertXmlData);
+
+                    ﾌｧｲﾙ変換を組み込むところまでできた。
+                    次は、変換したｘｍｌfileを読み込んで、ﾃｰﾌﾞﾙに表示させる。
+                    現状はｃｓｖを表示しているので。
+                    
 
                     if(data == null) {
                         // File access error.
