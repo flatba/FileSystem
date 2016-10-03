@@ -14,8 +14,9 @@ import java.util.ArrayList;
  */
 
 public class FileAccess {
-    static int infoNUM = 4;
+
     public ArrayList<PatientInformation> columnsArr;
+
     public ArrayList<PatientInformation> readFile(String Path, int combo) {
         columnsArr = new ArrayList();
 

@@ -418,7 +418,6 @@ class FileSystem extends JFrame {
                     BottomPanel.add(new JLabel("ファイルが指定されていません。"));
                     BottomPanel.updateUI();
                 }else{
-
                     ArrayList dataList = new ArrayList<>();
                     ArrayList<PatientInformation> infoList = getTableItems();
                     for(int i = 0; i < infoList.size(); i++) {
