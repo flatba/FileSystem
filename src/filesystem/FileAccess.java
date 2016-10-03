@@ -84,7 +84,7 @@ public class FileAccess {
             e.printStackTrace(); // エラーがあった場合は、スタックトレースを出力
         }
     }
-    // Read CSV Format File-------------------------------------------------
+    // Read CSV Format File-----------------------------------------------------------
 
     // Convert CSV to XML Format File-------------------------------------------------
     public StringBuilder convertXmlFormat(String Path, int combo) {
@@ -92,7 +92,6 @@ public class FileAccess {
         StringBuilder sb = new StringBuilder();
 
         try {
-
             File file = new File("C:\\Users\\y_hiraba\\Documents");
             if(Path != "") {
                     file = new File(Path);
@@ -139,7 +138,7 @@ public class FileAccess {
             sb.append("</persons>\n</root>");
 
             // ファイルの書き出し
-            File outputFile = new File("C:\\Users\\y_hiraba\\Documents\\sample.xml");
+            File outputFile = new File("C:\\Users\\y_hiraba\\Documents\\tmp.xml");
             try {
                 // 出力ストリームの生成
                 FileOutputStream fos = new FileOutputStream(outputFile);

@@ -385,17 +385,28 @@ class FileSystem extends JFrame {
                     data = new ArrayList();
                     data = fa.readFile(filePath, comboData); // filePathを入れるとcolumsArrが返ってくる
 
-                    // convertXmlFormat
+                    // convertXmlFormat--------------------------------------------
                     StringBuilder convertXmlData = new StringBuilder();
                     convertXmlData = fa.convertXmlFormat(filePath, comboData);
-                    System.out.println(convertXmlData);
+                    System.out.println(convertXmlData.getClass());
+                    System.out.println("指定されたcsvﾌｧｲﾙをxmlﾌｫｰﾏｯﾄに変換しました。");
+                    // convertXmlFormat--------------------------------------------
 
-                    ﾌｧｲﾙ変換を組み込むところまでできた。
-                    次は、変換したｘｍｌfileを読み込んで、ﾃｰﾌﾞﾙに表示させる。
-                    現状はｃｓｖを表示しているので。
-                    
+//                    ﾌｧｲﾙ変換を組み込んで保存するところまでできた。
 
-                    if(data == null) {
+//                    その、変換したｘｍｌfileを読み込んで、ﾃｰﾌﾞﾙに表示させる。
+//                    現状はｃｓｖを表示しているので。
+
+//                    ちなみに、ｘｍｌが読み込まれるとそのままﾃｰﾌﾞﾙに表示する仕様にする。
+
+                    // xmlの読み込み処理を書く
+                    filePath = "C:\\Users\\y_hiraba\\Documents\\tmp.xml";
+
+
+
+
+
+                    if(data == null || convertXmlData == null) {
                         // File access error.
                         return;
                     }
