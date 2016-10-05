@@ -10,7 +10,12 @@ import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
+import org.xml.sax.SAXException;
 
 /**
 *　GUI上でCSVファイルの読み書きを行うプログラム
@@ -378,51 +383,101 @@ class FileSystem extends JFrame {
                 }else{
                     // File select dialog
                     ArrayList<PatientInformation> data;
+                    ArrayList<String> convertXmlSbData;
 
+                    // 文字ｺｰﾄﾞ判別用ｺﾝﾎﾞﾎﾞｯｸｽ
                     comboData = charCode.getSelectedIndex();
                     System.out.println(comboData);
 
                     data = new ArrayList();
-                    data = fa.readFile(filePath, comboData); // filePathを入れるとcolumsArrが返ってくる
+                    convertXmlSbData = new ArrayList();
+
+                    // CSVを読み込んで展開するﾒｿｯﾄﾞ
+//                    data = fa.readCsvFormat(filePath, comboData); // filePathを入れるとcolumsArrが返ってくる
 
                     // convertXmlFormat--------------------------------------------
                     StringBuilder convertXmlData = new StringBuilder();
-                    convertXmlData = fa.convertXmlFormat(filePath, comboData);
-                    System.out.println(convertXmlData.getClass());
+                    convertXmlData = fa.convertXmlFormat(filePath, comboData); // xmlﾌｫｰﾏｯﾄに変換されたstringBuilder型で返ってきたﾃﾞｰﾀ(sb)
+
+                    // outputCsvFormat--------------------------------------------
+                    try {
+                        // ここで返ってきているのは、ArrayList型の情報 [[id,name,sex,birthday,age,date],[],[]...]
+                        // 注意！ここで返ってきているのは文字列のArrayList　”[id,name,sex,birthday,age,date]”
+                        convertXmlSbData = fa.readXmlFormat(convertXmlData);
+//                        System.out.println(convertXmlSbData);
+
+//                        データの数（つまりrowの数を調べる必要あり）
+                        String countNumStr = convertXmlSbData.toString();
+                        String count = countNumStr.replaceAll("\\[" , "");
+                        int countNum = countNumStr.length() - count.length();
+
+                        for (int j = 0; j < countNum; j++) {
+//                        PatientInformation info = data.get(j);
+                            String s = (convertXmlSbData.get(j));
+                            s = s.replaceAll("\\[", "");
+                            s = s.replaceAll("\\]", "");
+                            String[] str = s.split(",", 0);
+
+//                            String id = str[0];
+//                            System.out.println(str[0]);
+//                            String name = str[1];
+//                            System.out.println(str[1]);
+//                            String sex = str[2];
+//                            System.out.println(str[2]);
+//                            String birthday = str[3];
+//                            System.out.println(str[3]);
+//                            String age = str[4];
+//                            System.out.println(str[4]);
+//                            String date = str[5];
+//                            System.out.println(str[5]);
+
+                            int rc = patientInformationModel.getRowCount();
+                            patientInformationModel.addRow(new Object[] {rc});
+                            patientInformationModel.setValueAt(str[0], j, PatientInformation.COLUMN_ID);
+                            patientInformationModel.setValueAt(str[1], j, PatientInformation.COLUMN_NAME);
+                            patientInformationModel.setValueAt(str[2], j, PatientInformation.COLUMN_SEX);
+                            patientInformationModel.setValueAt(str[3], j, PatientInformation.COLUMN_BIRTHDAY);
+                            patientInformationModel.setValueAt(str[4], j, PatientInformation.COLUMN_AGE);
+                            patientInformationModel.setValueAt(str[5], j, PatientInformation.COLUMN_DATE);
+
+                        }
+
+                        loadFieldTable.setModel(patientInformationModel);
+
+                    } catch (ParserConfigurationException ex) {
+                        Logger.getLogger(FileSystem.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (SAXException ex) {
+                        Logger.getLogger(FileSystem.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (XPathExpressionException ex) {
+                        Logger.getLogger(FileSystem.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
                     System.out.println("指定されたcsvﾌｧｲﾙをxmlﾌｫｰﾏｯﾄに変換しました。");
+
                     // convertXmlFormat--------------------------------------------
 
-//                    ﾌｧｲﾙ変換を組み込んで保存するところまでできた。
-
-//                    その、変換したｘｍｌfileを読み込んで、ﾃｰﾌﾞﾙに表示させる。
-//                    現状はｃｓｖを表示しているので。
-
-//                    ちなみに、ｘｍｌが読み込まれるとそのままﾃｰﾌﾞﾙに表示する仕様にする。
-
-                    // xmlの読み込み処理を書く
-                    filePath = "C:\\Users\\y_hiraba\\Documents\\tmp.xml";
+//                    if(data == null || convertXmlData == null) {
+//                        // File access error.
+//                        System.out.println("file error");
+//                        return;
+//                    }
 
 
+//                    for (int j = 0; j < data.size(); j++) {
+//                        PatientInformation info = data.get(j);
+//                        int rc = patientInformationModel.getRowCount();
+//                        patientInformationModel.addRow(new Object[] {rc});
+//                        patientInformationModel.setValueAt(info.getId(), j, PatientInformation.COLUMN_ID);
+//                        patientInformationModel.setValueAt(info.getName(), j, PatientInformation.COLUMN_NAME);
+//                        patientInformationModel.setValueAt(info.getSex(), j, PatientInformation.COLUMN_SEX);
+//                        patientInformationModel.setValueAt(info.getBirthday(), j, PatientInformation.COLUMN_BIRTHDAY);
+//                        patientInformationModel.setValueAt(info.getAge(), j, PatientInformation.COLUMN_AGE);
+//                        patientInformationModel.setValueAt(info.getDate(), j, PatientInformation.COLUMN_DATE);
+//                    }
 
+                    // outputXmlFormat--------------------------------------------
 
-
-                    if(data == null || convertXmlData == null) {
-                        // File access error.
-                        return;
-                    }
-                    // data ...
-                    for (int j = 0; j < data.size(); j++) {
-                        PatientInformation info = data.get(j);
-                        int rc = patientInformationModel.getRowCount();
-                        patientInformationModel.addRow(new Object[] {rc});
-                        patientInformationModel.setValueAt(info.getId(), j, PatientInformation.COLUMN_ID);
-                        patientInformationModel.setValueAt(info.getName(), j, PatientInformation.COLUMN_NAME);
-                        patientInformationModel.setValueAt(info.getSex(), j, PatientInformation.COLUMN_SEX);
-                        patientInformationModel.setValueAt(info.getBirthday(), j, PatientInformation.COLUMN_BIRTHDAY);
-                        patientInformationModel.setValueAt(info.getAge(), j, PatientInformation.COLUMN_AGE);
-                        patientInformationModel.setValueAt(info.getDate(), j, PatientInformation.COLUMN_DATE);
-                    }
-                    loadFieldTable.setModel(patientInformationModel);
+//                    loadFieldTable.setModel(patientInformationModel);
 //                    JOptionPane.showMessageDialog(FileSystem.this, "ファイルの読み込みが完了しました。");
                     BottomPanel.removeAll();
                     BottomPanel.add(new JLabel("ファイルの読み込みが完了しました。"));
@@ -480,6 +535,7 @@ class FileSystem extends JFrame {
                 BottomPanel.removeAll();
                 BottomPanel.add(new JLabel("まだ実装されていない機能です。"));
                 BottomPanel.updateUI();
+                // 選択した行に上書き or 新たに行を追加 の処理を加える
             }
         });
 

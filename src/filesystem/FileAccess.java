@@ -7,6 +7,18 @@ package filesystem;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -14,14 +26,14 @@ import java.util.ArrayList;
  */
 
 public class FileAccess {
+    // Read CSV Format File-------------------------------------------------
+    public ArrayList<PatientInformation> readCsvFormat(String Path, int combo) {
 
-    public ArrayList<PatientInformation> readFile(String Path, int combo) {
         ArrayList<PatientInformation> columnsArr;
         columnsArr = new ArrayList();
 
-        // Read CSV Format File-------------------------------------------------
         try {
-            File file = new File("C:\\Users\\y_hiraba\\Documents");
+            File file = new File("C:\\Users\\y_hiraba\\Documents\\tmp");
             if(Path != "") {
                     file = new File(Path);
             }
@@ -65,6 +77,7 @@ public class FileAccess {
         return columnsArr;
 
     }
+    // Read CSV Format File-----------------------------------------------------------
 
     public void writeFile(String filePath, ArrayList<String> dataList) {
         File outputFile = new File(filePath);
@@ -84,7 +97,7 @@ public class FileAccess {
             e.printStackTrace(); // エラーがあった場合は、スタックトレースを出力
         }
     }
-    // Read CSV Format File-----------------------------------------------------------
+
 
     // Convert CSV to XML Format File-------------------------------------------------
     public StringBuilder convertXmlFormat(String Path, int combo) {
@@ -109,8 +122,7 @@ public class FileAccess {
             BufferedReader buffer = new BufferedReader(stream);
             String ReadLine;
 
-
-            sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<root>\n<persons>\n");
+            sb.append("<?xml version=\"1.0\"?>\n<persons>\n");
             while ((ReadLine = buffer.readLine()) != null) {
                 byte[] b = ReadLine.getBytes();
                 ReadLine = new String(b, "UTF-8");
@@ -121,23 +133,23 @@ public class FileAccess {
                 // line 2 : columns[] = { "患者ID", "氏名", "性別", "生年月日", "年齢", "追加日" }
                 // line n : ...
                 // convert XML Format
-                sb.append("    <person>\n        <id>");
+                sb.append("<person>\n<id>");
                 sb.append(columns[0]); // id
-                sb.append("</id>\n        <name>");
+                sb.append("</id>\n<name>");
                 sb.append(columns[1]); //name
-                sb.append("</name>\n        <sex>");
+                sb.append("</name>\n<sex>");
                 sb.append(columns[2]); // sex
-                sb.append("</sex>\n        <birthday>");
+                sb.append("</sex>\n<birthday>");
                 sb.append(columns[3]); //birthday
-                sb.append("</birthday>\n        <age>");
+                sb.append("</birthday>\n<age>");
                 sb.append(columns[4]); // age
-                sb.append("</age>\n        <date>");
+                sb.append("</age>\n<date>");
                 sb.append(columns[5]); // date
-                sb.append("</date>\n    </person>\n");
+                sb.append("</date>\n</person>\n");
             }
-            sb.append("</persons>\n</root>");
+            sb.append("</persons>\n");
 
-            // ファイルの書き出し
+            // xmlファイルの書き出し
             File outputFile = new File("C:\\Users\\y_hiraba\\Documents\\tmp.xml");
             try {
                 // 出力ストリームの生成
@@ -162,10 +174,75 @@ public class FileAccess {
         }
 
         return sb;
+
     }
     // Convert CSV to XML Format File-------------------------------------------------
 
     // Read XML Format File-------------------------------------------------
+    public ArrayList readXmlFormat(StringBuilder convertXmlData) throws ParserConfigurationException, SAXException, XPathExpressionException {
 
+        ArrayList<String> xmlElement = new ArrayList();
+
+        try{
+//            File file = new File("C:\\Users\\y_hiraba\\Documents\\tmp\\tmp.xml");
+//            FileInputStream input = new FileInputStream(file);
+//            InputStreamReader stream = new InputStreamReader(input,"SJIS");
+//            stream = new InputStreamReader(input,"UTF-8");
+//            BufferedReader buffer = new BufferedReader(stream);
+//            String ReadLine;
+//            StringBuilder sb = new StringBuilder();
+//            while ((ReadLine = buffer.readLine()) != null) {
+//                byte[] b = ReadLine.getBytes();
+//                ReadLine = new String(b, "UTF-8");
+//                sb.append(ReadLine);
+//            }
+            StringBuilder sb = new StringBuilder();
+            sb = convertXmlData;
+
+            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document document = documentBuilder.parse(new InputSource(new ByteArrayInputStream(sb.toString().getBytes("UTF-8"))));
+
+            XPathFactory xpfactory = XPathFactory.newInstance();
+            XPath xpath = xpfactory.newXPath();
+
+            NodeList list = document.getElementsByTagName("person");
+
+            for (int i = 0; i < list.getLength()+1; i++) {
+                ArrayList<String> xmlElementTmp = new ArrayList();
+
+                String countNum = String.valueOf(i);
+
+                String id = xpath.evaluate("/persons/person[position()=" + countNum + "]/id", document);
+                xmlElementTmp.add(id);
+                String name = xpath.evaluate("/persons/person[position()=" + countNum + "]/name", document);
+                xmlElementTmp.add(name);
+                String sex = xpath.evaluate("/persons/person[position()=" + countNum + "]/sex", document);
+                xmlElementTmp.add(sex);
+                String birthday = xpath.evaluate("/persons/person[position()=" + countNum + "]/birthday", document);
+                xmlElementTmp.add(birthday);
+                String age = xpath.evaluate("/persons/person[position()=" + countNum + "]/age", document);
+                xmlElementTmp.add(age);
+                String date = xpath.evaluate("/persons/person[position()=" + countNum + "]/date", document);
+                xmlElementTmp.add(date);
+
+                xmlElement.add(xmlElementTmp.toString());
+            }
+//            System.out.println(xmlElement);
+
+//            input.close();
+//            stream.close();
+//            buffer.close();
+
+        } catch (FileNotFoundException ex) {
+//            Logger.getLogger(FileAccess.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnsupportedEncodingException ex) {
+//            Logger.getLogger(FileAccess.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+//            Logger.getLogger(FileAccess.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return xmlElement;
+
+    }
     // Read XML Format File-------------------------------------------------
 }
