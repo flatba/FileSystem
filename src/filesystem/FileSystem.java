@@ -53,7 +53,7 @@ import org.xml.sax.SAXException;
 //        }
 //    }
 
-// イベントを発生させるボタンを生成
+
 class FileSystem extends JFrame {
     // Button
     private JButton selectButton;
@@ -251,7 +251,7 @@ class FileSystem extends JFrame {
     }
 
     public void paste() {
-        // 選択行に上書き or 新たに行を追加
+        // 選択行に上書き or 新たに行を追加する処理を追加する
 //        System.out.println(patientInformationArr);
 //        DefaultTableModel model = (DefaultTableModel)loadFieldTable.getModel();
 //        model.addRow(patientInformationArrTmp.toArray());
@@ -375,74 +375,57 @@ class FileSystem extends JFrame {
         load.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(filePath == ""){
-//                    JOptionPane.showMessageDialog(FileSystem.this, "ファイルが指定されていません。");
+                if(filePath.equals("")) {
                     BottomPanel.removeAll();
-                    BottomPanel.add(new JLabel("ファイルが指定されていません"));
+                    BottomPanel.add(new JLabel("ファイルが指定されていません")); // error message : not selected file
                     BottomPanel.updateUI();
                 }else{
-                    // File select dialog
-                    ArrayList<PatientInformation> data;
-                    ArrayList<String> convertXmlSbData;
-
-                    // 文字ｺｰﾄﾞ判別用ｺﾝﾎﾞﾎﾞｯｸｽ
+                    // 文字コード判別用コンボボックス
                     comboData = charCode.getSelectedIndex();
-                    System.out.println(comboData);
 
-                    data = new ArrayList();
-                    convertXmlSbData = new ArrayList();
+                    /*// read CSV FormatとConvert CSV to XMLは条件分岐する？
+                    if (読み込んだFilePathにcsvが含まれていたら){
+                         // read CSV Format // fileのディレクトリパスと文字コード情報を入れるとArrayList型の患者情報が返ってくる
+                        ArrayList<PatientInformation> data = new ArrayList();
+                        data = fa.readCsvFormat(filePath, comboData);
+                    }else if (読み込んだFilePathにxmlが含まれていたら){
+                        // Convert CSV to XML
+                    }
+                    */
 
-                    // CSVを読み込んで展開するﾒｿｯﾄﾞ
-//                    data = fa.readCsvFormat(filePath, comboData); // filePathを入れるとcolumsArrが返ってくる
 
-                    // convertXmlFormat--------------------------------------------
+                    // Convert CSV to XML // fileのディレクトリパスと文字コード情報を入れると,XML形式でstringBuilder型の患者情報が返ってくる
                     StringBuilder convertXmlData = new StringBuilder();
-                    convertXmlData = fa.convertXmlFormat(filePath, comboData); // xmlﾌｫｰﾏｯﾄに変換されたstringBuilder型で返ってきたﾃﾞｰﾀ(sb)
+                    convertXmlData = fa.convertXmlFormat(filePath, comboData); // xml形式に変換された文字列（StringBuilder型）が返ってくる
 
-                    // outputCsvFormat--------------------------------------------
+                    System.out.println("指定されたcsvﾌｧｲﾙをxmlﾌｫｰﾏｯﾄに変換しました。");
+
+                    ArrayList<PatientInformation> convertXmlPatientInformationData = new ArrayList();
+
                     try {
-                        // ここで返ってきているのは、ArrayList型の情報 [[id,name,sex,birthday,age,date],[],[]...]
-                        // 注意！ここで返ってきているのは文字列のArrayList　”[id,name,sex,birthday,age,date]”
-                        convertXmlSbData = fa.readXmlFormat(convertXmlData);
-//                        System.out.println(convertXmlSbData);
+                        // 2016/10/05_ArrayList型の二次元配列で返すように修正
+                        // 2016/10/05_PatientInformation型の二次元配列で返すように修正
+                        convertXmlPatientInformationData = fa.readXmlFormat(convertXmlData);
 
-//                        データの数（つまりrowの数を調べる必要あり）
-                        String countNumStr = convertXmlSbData.toString();
-                        String count = countNumStr.replaceAll("\\[" , "");
-                        int countNum = countNumStr.length() - count.length();
+                        for (int j = 0; j < convertXmlPatientInformationData.size(); j++) {
 
-                        for (int j = 0; j < countNum; j++) {
-//                        PatientInformation info = data.get(j);
-                            String s = (convertXmlSbData.get(j));
-                            s = s.replaceAll("\\[", "");
-                            s = s.replaceAll("\\]", "");
-                            String[] str = s.split(",", 0);
-
-//                            String id = str[0];
-//                            System.out.println(str[0]);
-//                            String name = str[1];
-//                            System.out.println(str[1]);
-//                            String sex = str[2];
-//                            System.out.println(str[2]);
-//                            String birthday = str[3];
-//                            System.out.println(str[3]);
-//                            String age = str[4];
-//                            System.out.println(str[4]);
-//                            String date = str[5];
-//                            System.out.println(str[5]);
+                            PatientInformation info = convertXmlPatientInformationData.get(j);
 
                             int rc = patientInformationModel.getRowCount();
                             patientInformationModel.addRow(new Object[] {rc});
-                            patientInformationModel.setValueAt(str[0], j, PatientInformation.COLUMN_ID);
-                            patientInformationModel.setValueAt(str[1], j, PatientInformation.COLUMN_NAME);
-                            patientInformationModel.setValueAt(str[2], j, PatientInformation.COLUMN_SEX);
-                            patientInformationModel.setValueAt(str[3], j, PatientInformation.COLUMN_BIRTHDAY);
-                            patientInformationModel.setValueAt(str[4], j, PatientInformation.COLUMN_AGE);
-                            patientInformationModel.setValueAt(str[5], j, PatientInformation.COLUMN_DATE);
-
+                            patientInformationModel.setValueAt(info.getId(), j, PatientInformation.COLUMN_ID);
+                            patientInformationModel.setValueAt(info.getName(), j, PatientInformation.COLUMN_NAME);
+                            patientInformationModel.setValueAt(info.getSex(), j, PatientInformation.COLUMN_SEX);
+                            patientInformationModel.setValueAt(info.getBirthday(), j, PatientInformation.COLUMN_BIRTHDAY);
+                            patientInformationModel.setValueAt(info.getAge(), j, PatientInformation.COLUMN_AGE);
+                            patientInformationModel.setValueAt(info.getDate(), j, PatientInformation.COLUMN_DATE);
                         }
 
                         loadFieldTable.setModel(patientInformationModel);
+
+                        BottomPanel.removeAll();
+                        BottomPanel.add(new JLabel("ファイルの読み込みが完了しました。"));
+                        BottomPanel.updateUI();
 
                     } catch (ParserConfigurationException ex) {
                         Logger.getLogger(FileSystem.class.getName()).log(Level.SEVERE, null, ex);
@@ -451,37 +434,6 @@ class FileSystem extends JFrame {
                     } catch (XPathExpressionException ex) {
                         Logger.getLogger(FileSystem.class.getName()).log(Level.SEVERE, null, ex);
                     }
-
-                    System.out.println("指定されたcsvﾌｧｲﾙをxmlﾌｫｰﾏｯﾄに変換しました。");
-
-                    // convertXmlFormat--------------------------------------------
-
-//                    if(data == null || convertXmlData == null) {
-//                        // File access error.
-//                        System.out.println("file error");
-//                        return;
-//                    }
-
-
-//                    for (int j = 0; j < data.size(); j++) {
-//                        PatientInformation info = data.get(j);
-//                        int rc = patientInformationModel.getRowCount();
-//                        patientInformationModel.addRow(new Object[] {rc});
-//                        patientInformationModel.setValueAt(info.getId(), j, PatientInformation.COLUMN_ID);
-//                        patientInformationModel.setValueAt(info.getName(), j, PatientInformation.COLUMN_NAME);
-//                        patientInformationModel.setValueAt(info.getSex(), j, PatientInformation.COLUMN_SEX);
-//                        patientInformationModel.setValueAt(info.getBirthday(), j, PatientInformation.COLUMN_BIRTHDAY);
-//                        patientInformationModel.setValueAt(info.getAge(), j, PatientInformation.COLUMN_AGE);
-//                        patientInformationModel.setValueAt(info.getDate(), j, PatientInformation.COLUMN_DATE);
-//                    }
-
-                    // outputXmlFormat--------------------------------------------
-
-//                    loadFieldTable.setModel(patientInformationModel);
-//                    JOptionPane.showMessageDialog(FileSystem.this, "ファイルの読み込みが完了しました。");
-                    BottomPanel.removeAll();
-                    BottomPanel.add(new JLabel("ファイルの読み込みが完了しました。"));
-                    BottomPanel.updateUI();
                 }
             }
         });
@@ -490,20 +442,25 @@ class FileSystem extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(filePath.equals("")){
-//                    JOptionPane.showMessageDialog(FileSystem.this, "ファイルが指定されていません。");
+                    // error message : ファイルを指定していない場合エラー
                     BottomPanel.removeAll();
                     BottomPanel.add(new JLabel("ファイルが指定されていません。"));
                     BottomPanel.updateUI();
                 }else{
                     ArrayList dataList = new ArrayList<>();
                     ArrayList<PatientInformation> infoList = getTableItems();
+
                     for(int i = 0; i < infoList.size(); i++) {
                         PatientInformation info = infoList.get(i);
                         dataList.add(info.convertCsvFormat());
                     }
-                    fa.writeFile(filePath, dataList);
+
+//                    fa.writeCsv(filePath, dataList);
+
+                    fa.writeXml(dataList);
+
                     System.out.println("出力しました。");
-//                    JOptionPane.showMessageDialog(FileSystem.this, "ファイルの出力が完了しました。");
+
                     BottomPanel.removeAll();
                     BottomPanel.add(new JLabel("ファイルの出力が完了しました。"));
                     BottomPanel.updateUI();
@@ -653,7 +610,7 @@ class FileSystem extends JFrame {
             ret.setAge((String)loadFieldTable.getValueAt(row, PatientInformation.COLUMN_AGE));
             ret.setDate((String)loadFieldTable.getValueAt(row, PatientInformation.COLUMN_DATE));
         }
-        System.out.println(ret);
+//        System.out.println(ret);
         return ret;
     }
 
