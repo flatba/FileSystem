@@ -101,7 +101,7 @@ class FileSystem extends JFrame {
         FileSystem f = new FileSystem();
     }
 
-    // 未入力の場合のエラーダイアログの表示
+    // 新規患者入力時、未入力がある場合にエラーダイアログを表示する
     public void error() {
         // 条件が良くないので適切な状態で判定ができていない。
         if(patientInformationArrTmp.indexOf("") >= 0){
@@ -163,17 +163,17 @@ class FileSystem extends JFrame {
             JOptionPane.showMessageDialog(this, "性別を選択してください。");
             return;
         }
-        if(check == false){ // update
+        if(check == false){
             int selectedRow = loadFieldTable.getSelectedRow();
-            // ﾃﾞｰﾀの反映
+            // データの反映 ： update時の処理
             loadFieldTable.setValueAt(id.getText(), selectedRow, 0);
             loadFieldTable.setValueAt(name.getText(), selectedRow, 1);
             loadFieldTable.setValueAt(sex, selectedRow, 2);
             loadFieldTable.setValueAt(birthday.getText().replaceAll("-", "/"), selectedRow, 3);
             loadFieldTable.setValueAt(age.getText(), selectedRow, 4);
             loadFieldTable.setValueAt(date.getText(), selectedRow, 5);
-        }else{ //add
-            // ﾃﾞｰﾀの反映
+        }else{
+            // データの反映 : add時の処理
             ArrayList<String> ret = new ArrayList<>();
             ret.add(id.getText());
             ret.add(name.getText());
@@ -279,7 +279,7 @@ class FileSystem extends JFrame {
 
         selectField = new JTextField(filePath, 30);
         TopPanel.add(selectField);
-        selectButton = new JButton("ファイルの選択");
+        selectButton = new JButton("選択...");
         TopPanel.add(selectButton);
 
         String[] charComboData = {"SJIS", "UTF-8"};
@@ -359,12 +359,10 @@ class FileSystem extends JFrame {
                     filePath = file.getAbsolutePath();
                     selectField.setText(filePath);
                 }else if (selected == JFileChooser.CANCEL_OPTION){
-//                    selectField.setToolTipText("キャンセルされました");
                     BottomPanel.removeAll();
                     BottomPanel.add(new JLabel("キャンセルされました"));
                     BottomPanel.updateUI();
                 }else if (selected == JFileChooser.ERROR_OPTION){
-//                    selectField.setText("エラー又は取消しがありました");
                     BottomPanel.removeAll();
                     BottomPanel.add(new JLabel("エラー又は取消しがありました"));
                     BottomPanel.updateUI();
@@ -375,52 +373,51 @@ class FileSystem extends JFrame {
         load.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // 文字コード判別用
+                comboData = charCode.getSelectedIndex();
+
+                ArrayList<PatientInformation> convertXmlPatientInformationData = new ArrayList();
+                StringBuilder convertXmlData = new StringBuilder();
+
+                // 選択されたファイル形式の識別
                 if(filePath.equals("")) {
                     BottomPanel.removeAll();
                     BottomPanel.add(new JLabel("ファイルが指定されていません")); // error message : not selected file
                     BottomPanel.updateUI();
-                }else{
-                    // 文字コード判別用コンボボックス
-                    comboData = charCode.getSelectedIndex();
+                    return;
+                }else if(filePath.lastIndexOf(".csv") > 0 || filePath.lastIndexOf(".xml") > 0){
+                    if(filePath.lastIndexOf(".csv") > 0) { // output csv Format：csvフォーマットの展開
+                    // read CSV Format：fileのディレクトリパスと文字コード情報を入れるとArrayList型の患者情報が返ってくる
+                    // ArrayList<PatientInformation> data = new ArrayList();
+                    // data = fa.readCsvFormat(filePath, comboData);
 
-                    /*// read CSV FormatとConvert CSV to XMLは条件分岐する？
-                    if (読み込んだFilePathにcsvが含まれていたら){
-                         // read CSV Format // fileのディレクトリパスと文字コード情報を入れるとArrayList型の患者情報が返ってくる
-                        ArrayList<PatientInformation> data = new ArrayList();
-                        data = fa.readCsvFormat(filePath, comboData);
-                    }else if (読み込んだFilePathにxmlが含まれていたら){
-                        // Convert CSV to XML
-                    }
-                    */
+                    // Convert CSV to XML Format
+                    convertXmlData = fa.convertXmlFormat(filePath, comboData);
 
+                }else if(filePath.lastIndexOf(".xml") > 0) {
+                    // xmlだったら普通に読み込んで文字列で受け取ってconvertXmlDataに入れる
+                    convertXmlData = fa.convertXmlFormat(filePath, comboData);
+                }
 
-                    // Convert CSV to XML // fileのディレクトリパスと文字コード情報を入れると,XML形式でstringBuilder型の患者情報が返ってくる
-                    StringBuilder convertXmlData = new StringBuilder();
-                    convertXmlData = fa.convertXmlFormat(filePath, comboData); // xml形式に変換された文字列（StringBuilder型）が返ってくる
-
-                    System.out.println("指定されたcsvﾌｧｲﾙをxmlﾌｫｰﾏｯﾄに変換しました。");
-
-                    ArrayList<PatientInformation> convertXmlPatientInformationData = new ArrayList();
-
+                    // output xml Format：xmlフォーマットの展開
                     try {
-                        // 2016/10/05_ArrayList型の二次元配列で返すように修正
-                        // 2016/10/05_PatientInformation型の二次元配列で返すように修正
-                        convertXmlPatientInformationData = fa.readXmlFormat(convertXmlData);
-
-                        for (int j = 0; j < convertXmlPatientInformationData.size(); j++) {
-
-                            PatientInformation info = convertXmlPatientInformationData.get(j);
-
-                            int rc = patientInformationModel.getRowCount();
-                            patientInformationModel.addRow(new Object[] {rc});
-                            patientInformationModel.setValueAt(info.getId(), j, PatientInformation.COLUMN_ID);
-                            patientInformationModel.setValueAt(info.getName(), j, PatientInformation.COLUMN_NAME);
-                            patientInformationModel.setValueAt(info.getSex(), j, PatientInformation.COLUMN_SEX);
-                            patientInformationModel.setValueAt(info.getBirthday(), j, PatientInformation.COLUMN_BIRTHDAY);
-                            patientInformationModel.setValueAt(info.getAge(), j, PatientInformation.COLUMN_AGE);
-                            patientInformationModel.setValueAt(info.getDate(), j, PatientInformation.COLUMN_DATE);
+                        if(filePath.lastIndexOf(".csv") > 0) {
+                            convertXmlPatientInformationData = fa.readXmlFormat(convertXmlData, null);
+                        }else if(filePath.lastIndexOf(".xml") > 0) {
+                            convertXmlPatientInformationData = fa.readXmlFormat(null, filePath);
                         }
 
+                        for (int row = 0; row < convertXmlPatientInformationData.size(); row++) {
+                            PatientInformation info = convertXmlPatientInformationData.get(row);
+                            int rc = patientInformationModel.getRowCount();
+                            patientInformationModel.addRow(new Object[] {rc});
+                            patientInformationModel.setValueAt(info.getId(), row, PatientInformation.COLUMN_ID);
+                            patientInformationModel.setValueAt(info.getName(), row, PatientInformation.COLUMN_NAME);
+                            patientInformationModel.setValueAt(info.getSex(), row, PatientInformation.COLUMN_SEX);
+                            patientInformationModel.setValueAt(info.getBirthday(), row, PatientInformation.COLUMN_BIRTHDAY);
+                            patientInformationModel.setValueAt(info.getAge(), row, PatientInformation.COLUMN_AGE);
+                            patientInformationModel.setValueAt(info.getDate(), row, PatientInformation.COLUMN_DATE);
+                        }
                         loadFieldTable.setModel(patientInformationModel);
 
                         BottomPanel.removeAll();
@@ -434,6 +431,12 @@ class FileSystem extends JFrame {
                     } catch (XPathExpressionException ex) {
                         Logger.getLogger(FileSystem.class.getName()).log(Level.SEVERE, null, ex);
                     }
+
+                }else{
+                    BottomPanel.removeAll();
+                    BottomPanel.add(new JLabel("ファイル形式が不明です。")); // error message : not selected file
+                    BottomPanel.updateUI();
+                    return;
                 }
             }
         });
@@ -441,7 +444,7 @@ class FileSystem extends JFrame {
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(filePath.equals("")){
+                if(filePath.equals("")) {
                     // error message : ファイルを指定していない場合エラー
                     BottomPanel.removeAll();
                     BottomPanel.add(new JLabel("ファイルが指定されていません。"));
@@ -455,10 +458,8 @@ class FileSystem extends JFrame {
                         dataList.add(info.convertCsvFormat());
                     }
 
-//                    fa.writeCsv(filePath, dataList);
-
+                    // fa.writeCsv(filePath, dataList);
                     fa.writeXml(dataList);
-
                     System.out.println("出力しました。");
 
                     BottomPanel.removeAll();
@@ -516,7 +517,6 @@ class FileSystem extends JFrame {
                     int selectionRow = loadFieldTable.getSelectedColumn();
                     System.out.print(selectionRow);
                     if( selectionRow < 0 ) {
-//                        JOptionPane.showMessageDialog(FileSystem.this, "選択されていません。");
                         BottomPanel.removeAll();
                         BottomPanel.add(new JLabel("選択されていません。"));
                         BottomPanel.updateUI();
@@ -551,7 +551,6 @@ class FileSystem extends JFrame {
                 update();
             }
         });
-        // ボタン設定------------------------------------------------------------
 
 
         loadFieldTable.addMouseListener(new MouseAdapter() {
@@ -559,7 +558,7 @@ class FileSystem extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 int btn = e.getButton();
                 if (btn == MouseEvent.BUTTON1){
-                    System.out.println("左ボタンクリック");
+//                    System.out.println("左ボタンクリック");
                     if (e.getClickCount() == 1) {
                         patientPanel.removeAll();
                         PatientInformation info = getSelectedTableRow();
