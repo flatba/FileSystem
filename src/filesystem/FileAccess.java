@@ -105,25 +105,6 @@ public class FileAccess {
         }
     }
 
-//    public BufferedReader fileBuffer(String filePath, int combo) throws FileNotFoundException, UnsupportedEncodingException {
-//            File file = new File("");
-//
-//            if(!"".equals(filePath)) {
-//                file = new File(filePath);
-//            }
-//
-//            FileInputStream input = new FileInputStream(file);
-//            InputStreamReader stream = new InputStreamReader(input,"SJIS");
-//            if(combo == 0) {
-//                stream = new InputStreamReader(input,"SJIS");
-//            }else if(combo == 1) {
-//                stream = new InputStreamReader(input,"UTF-8");
-//            }
-//            BufferedReader buffer = new BufferedReader(stream);
-//
-//            return buffer;
-//    }
-
 
     // Convert CSV to XML Format File：コンバートと読み込み時にも使用
     public StringBuilder convertXmlFormat(String filePath, int combo) {
@@ -137,8 +118,7 @@ public class FileAccess {
                 file = new File(filePath);
             }
 
-            // 上のほうでcsvかxmlの条件分岐は行ってしまうので、ｘｍｌを読み込む処理に書き換える。2016/10/05_csvの読み込みのみ対応
-            // read csv
+
             FileInputStream input = new FileInputStream(file);
             InputStreamReader stream = new InputStreamReader(input,"SJIS");
             if(combo == 0) {
@@ -149,15 +129,14 @@ public class FileAccess {
             BufferedReader buffer = new BufferedReader(stream);
             String ReadLine;
 
-//            System.out.println("バッファの読み込み");
-//            System.out.println(buffer);
-
             if(filePath.lastIndexOf(".csv") > 0) {
                 // make xml format
                 sb.append("<?xml version=\"1.0\"?>\n<persons>\n");
                 while ((ReadLine = buffer.readLine()) != null) {
-                    byte[] b = ReadLine.getBytes();
-                    ReadLine = new String(b, "UTF-8");
+                    // 本来は変換が必要だが、java内部でUTF-8の変換をやってくれている。
+                    // 何も指定しないと基本UTF-8と考える（デフォルト）。
+//                    byte[] b = ReadLine.getBytes();
+//                    ReadLine = new String(b, "UTF-8");
                     // ReadLine = "患者ID,氏名,性別,生年月日,年齢,追加日"
                     String[] columns = ReadLine.split(",",-1);
                     // readLine() : １行ずつ読み込みを行っている
@@ -184,10 +163,7 @@ public class FileAccess {
                 System.out.println("指定されたファイルはcsv形式のためxml形式に変換しました。");
 
             }else if(filePath.lastIndexOf(".xml") > 0) {
-                // Read xml Format return StringBuilder
-
-                    System.out.println("ここまで来た");
-
+                // Read xml Format return StringBuilder　
             }
 
             input.close();
@@ -205,7 +181,7 @@ public class FileAccess {
     }
 
 
-    // Read XML Format File：変換処理後の読み込み
+    // Read XML Format File
     public ArrayList readXmlFormat(StringBuilder convertXmlData, String filePath) throws ParserConfigurationException, SAXException, XPathExpressionException {
         ArrayList<PatientInformation> xmlElement = new ArrayList();
         StringBuilder sb = new StringBuilder();
@@ -272,9 +248,13 @@ public class FileAccess {
 
 
     // Write XML Format File
-    public void writeXml(ArrayList dataList){
+    public void writeXml(ArrayList dataList, String filePath){
             // 保存先のファイルパス
-            File outputFile = new File("C:\\Users\\y_hiraba\\Documents\\tmp\\tmp.xml");
+            File outputFile = new File("");
+
+            if(!"".equals(filePath)) {
+                outputFile = new File(filePath);
+            }
 
             StringBuilder xmlsb = new StringBuilder();
 

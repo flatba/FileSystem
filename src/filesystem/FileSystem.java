@@ -86,6 +86,7 @@ class FileSystem extends JFrame {
     public JPanel TopPanenl;
     public JPanel CenterPanel;
     public JPanel patientPanel;
+    public JPanel patientPanelBase;
 
     // Array
     public ArrayList<PatientInformation> patientInformationArrTmp;
@@ -96,6 +97,8 @@ class FileSystem extends JFrame {
 
     // Model
     public DefaultTableModel patientInformationModel;
+
+    PatientInformation pasteInfo;
 
     public static void main(String[] args) {
         FileSystem f = new FileSystem();
@@ -245,18 +248,33 @@ class FileSystem extends JFrame {
         return DialogPanelBase;
     }
 
-    public void copy() {
-        ArrayList<PatientInformation> patientInformationArrTmp = new ArrayList<>();
-        patientInformationArrTmp.add(getSelectedTableRow());
+    public PatientInformation copy() {
+       return getSelectedTableRow();
     }
 
-    public void paste() {
-        // 選択行に上書き or 新たに行を追加する処理を追加する
-//        System.out.println(patientInformationArr);
-//        DefaultTableModel model = (DefaultTableModel)loadFieldTable.getModel();
-//        model.addRow(patientInformationArrTmp.toArray());
-//        patientInformationArrTmp.clear();
+    public void paste(PatientInformation pasteInfo) {
+        ArrayList<String> ret = new ArrayList<>();
+        ret.add(pasteInfo.getId());
+        ret.add(pasteInfo.getName());
+        ret.add(pasteInfo.getSex());
+        ret.add(pasteInfo.getBirthday());
+        ret.add(pasteInfo.getAge());
+        ret.add(pasteInfo.getDate());
+
+        DefaultTableModel model = (DefaultTableModel)loadFieldTable.getModel();
+        model.addRow(ret.toArray());
     }
+
+    public void copyPaste(boolean check){
+        if(check == true){
+            pasteInfo = new PatientInformation();
+            pasteInfo = copy();
+        }else{
+            paste(pasteInfo);
+        }
+    }
+
+
 
     public FileSystem(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -267,11 +285,17 @@ class FileSystem extends JFrame {
 
         // Top Panelの設定-------------------------------------------------------
         JPanel TopPanel = new JPanel();
+        patientPanelBase = new JPanel();
         patientPanel = new JPanel();
         JPanel ButtonPanel1 = new JPanel();
         TopPanel.setPreferredSize(new Dimension(600, 150));
-        patientPanel.setPreferredSize(new Dimension(500, 80));
+
+        patientPanelBase.setPreferredSize(new Dimension(505, 85));
+        patientPanelBase.setBackground(new Color(232,226,232)); // set Color
+        patientPanelBase.setLayout(new FlowLayout(FlowLayout.CENTER));
+        patientPanel.setPreferredSize(new Dimension(400, 80));
         patientPanel.setBackground(new Color(232,226,232)); // set Color
+        patientPanel.setLayout(new GridLayout(2,3));
 
 //        ButtonPanel1.setBackground(new Color(140,140,140)); // set Color
 //        ButtonPanel2.setBackground(new Color(140,140,140)); // set Color
@@ -285,7 +309,8 @@ class FileSystem extends JFrame {
         String[] charComboData = {"SJIS", "UTF-8"};
         JComboBox charCode = new JComboBox(charComboData);
         TopPanel.add(charCode);
-        TopPanel.add(patientPanel);
+
+        TopPanel.add(patientPanelBase);
 
         load = new JButton("読み込み");
         save = new JButton("保存");
@@ -348,7 +373,7 @@ class FileSystem extends JFrame {
         selectButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser filechooser = new JFileChooser();
+                JFileChooser filechooser = new JFileChooser("C:\\Users\\y_hiraba\\Documents\\tmp");
                 filechooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
                 int selected = filechooser.showOpenDialog(FileSystem.this);
 
@@ -395,7 +420,6 @@ class FileSystem extends JFrame {
                     convertXmlData = fa.convertXmlFormat(filePath, comboData);
 
                 }else if(filePath.lastIndexOf(".xml") > 0) {
-                    // xmlだったら普通に読み込んで文字列で受け取ってconvertXmlDataに入れる
                     convertXmlData = fa.convertXmlFormat(filePath, comboData);
                 }
 
@@ -444,26 +468,37 @@ class FileSystem extends JFrame {
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(filePath.equals("")) {
-                    // error message : ファイルを指定していない場合エラー
-                    BottomPanel.removeAll();
-                    BottomPanel.add(new JLabel("ファイルが指定されていません。"));
-                    BottomPanel.updateUI();
-                }else{
+                JFileChooser filechooser = new JFileChooser("C:\\Users\\y_hiraba\\Documents\\tmp");
+                filechooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                int selected = filechooser.showSaveDialog(FileSystem.this);
+
+                if (selected == JFileChooser.APPROVE_OPTION) {
+                    File file = filechooser.getSelectedFile();
+                    filePath = file.getAbsolutePath();
+
                     ArrayList dataList = new ArrayList<>();
                     ArrayList<PatientInformation> infoList = getTableItems();
-
                     for(int i = 0; i < infoList.size(); i++) {
                         PatientInformation info = infoList.get(i);
                         dataList.add(info.convertCsvFormat());
                     }
 
-                    // fa.writeCsv(filePath, dataList);
-                    fa.writeXml(dataList);
+                    // fa.writeCsv(filePath, dataList); // csvの書き出しにはこの関数を使う
+                    fa.writeXml(dataList, filePath);
                     System.out.println("出力しました。");
 
                     BottomPanel.removeAll();
                     BottomPanel.add(new JLabel("ファイルの出力が完了しました。"));
+                    BottomPanel.updateUI();
+
+
+                }else if (selected == JFileChooser.CANCEL_OPTION){
+                    BottomPanel.removeAll();
+                    BottomPanel.add(new JLabel("キャンセルされました"));
+                    BottomPanel.updateUI();
+                }else if (selected == JFileChooser.ERROR_OPTION){
+                    BottomPanel.removeAll();
+                    BottomPanel.add(new JLabel("エラー又は取消しがありました"));
                     BottomPanel.updateUI();
                 }
             }
@@ -479,7 +514,7 @@ class FileSystem extends JFrame {
         copyMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                copy();
+                copyPaste(true);
                 BottomPanel.removeAll();
                 BottomPanel.add(new JLabel("選択された行をコピーしました。"));
                 BottomPanel.updateUI();
@@ -489,11 +524,10 @@ class FileSystem extends JFrame {
         pasteMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                paste();
+                copyPaste(false);
                 BottomPanel.removeAll();
-                BottomPanel.add(new JLabel("まだ実装されていない機能です。"));
+                BottomPanel.add(new JLabel("行の最後尾に追加しました。"));
                 BottomPanel.updateUI();
-                // 選択した行に上書き or 新たに行を追加 の処理を加える
             }
         });
 
@@ -562,12 +596,29 @@ class FileSystem extends JFrame {
                     if (e.getClickCount() == 1) {
                         patientPanel.removeAll();
                         PatientInformation info = getSelectedTableRow();
-                        JLabel label = new JLabel();
-                        label.setText(info.patientToString());
-                        label.setOpaque(false);
-                        patientPanel.add(label);
-                        // patientPanel.repaint();
+
+                        JLabel idLabel = new JLabel();
+                        idLabel.setText("患者ID：" + info.getId());
+                        patientPanel.add(idLabel);
+                        JLabel nameLabel = new JLabel();
+                        nameLabel.setText("氏名：" + info.getName());
+                        patientPanel.add(nameLabel);
+                        JLabel sexLabel = new JLabel();
+                        sexLabel.setText("性別：" + info.getSex());
+                        patientPanel.add(sexLabel);
+                        JLabel birthdayLabel = new JLabel();
+                        birthdayLabel.setText("生年月日：" + info.getBirthday());
+                        patientPanel.add(birthdayLabel);
+                        JLabel ageLabel = new JLabel();
+                        ageLabel.setText("年齢：" + info.getAge());
+                        patientPanel.add(ageLabel);
+                        JLabel dateLabel = new JLabel();
+                        dateLabel.setText("追加日：" + info.getDate());
+                        patientPanel.add(dateLabel);
+
+                        patientPanelBase.add(patientPanel);
                         patientPanel.updateUI();
+
                     }else if(e.getClickCount() == 2){
                         update();
                     }
@@ -618,7 +669,7 @@ class FileSystem extends JFrame {
         return getTabledRowInfo(getSelectedRow());
     }
 
-    // ﾃｰﾌﾞﾙにあるすべての情報を行ごとに取得して返す
+    // テーブルにあるすべての情報を行ごとに取得して返す
     private ArrayList<PatientInformation> getTableItems() {
         ArrayList<PatientInformation> ret = new ArrayList<>();
         for(int row = 0; row < loadFieldTable.getRowCount(); row++) {

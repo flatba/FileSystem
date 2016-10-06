@@ -89,17 +89,17 @@ public class PatientInformation {
     public String patientToString() {
         StringBuilder sb = new StringBuilder();
         sb.append("患者ID：");
-        sb.append(getId()).append("\n　");
+        sb.append(getId()).append(",");
         sb.append("患者氏名：");
-        sb.append(getName()).append("\n　");
+        sb.append(getName()).append(",");
         sb.append("患者性別：");
-        sb.append(getSex()).append("\n　");
+        sb.append(getSex()).append(",");
         sb.append("生年月日：");
-        sb.append(getBirthday()).append("\n　");
+        sb.append(getBirthday()).append(",");
         sb.append("年齢：");
-        sb.append(getAge()).append("\n　");
+        sb.append(getAge()).append(",");
         sb.append("追加日：");
-        sb.append(getDate()).append("\n　");
+        sb.append(getDate()).append(",");
 
         return sb.toString();
     }
