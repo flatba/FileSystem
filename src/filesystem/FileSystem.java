@@ -12,6 +12,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
@@ -375,6 +376,10 @@ class FileSystem extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser filechooser = new JFileChooser("C:\\Users\\y_hiraba\\Documents\\tmp");
                 filechooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("xmlファイル(*.xml)", "xml");
+                filechooser.addChoosableFileFilter(filter);
+
+
                 int selected = filechooser.showOpenDialog(FileSystem.this);
 
                 if (selected == JFileChooser.APPROVE_OPTION) {
@@ -485,7 +490,7 @@ class FileSystem extends JFrame {
 
                     // fa.writeCsv(filePath, dataList); // csvの書き出しにはこの関数を使う
                     fa.writeXml(dataList, filePath);
-                    System.out.println("出力しました。");
+//                    System.out.println("出力しました。");
 
                     BottomPanel.removeAll();
                     BottomPanel.add(new JLabel("ファイルの出力が完了しました。"));

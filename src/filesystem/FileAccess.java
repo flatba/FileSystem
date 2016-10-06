@@ -262,8 +262,13 @@ public class FileAccess {
             xmlsb.append("<?xml version=\"1.0\"?>\n    <persons>\n");
             for (int i = 0; i < dataList.size(); i++){
                 String str = dataList.get(i).toString();
-                String[] columns = str.split(",",-1);
 
+//                xmlsb.append(func(str));をつくってやる
+//                createPerson();
+//                createPersons();
+//                を作れるとなお良い
+                
+                String[] columns = str.split(",",-1);
                 xmlsb.append("        <person>\n            <id>");
                 xmlsb.append(columns[0]); // id
                 xmlsb.append("</id>\n            <name>");
@@ -277,6 +282,9 @@ public class FileAccess {
                 xmlsb.append("</age>\n            <date>");
                 xmlsb.append(columns[5]); // date
                 xmlsb.append("</date>\n        </person>\n");
+
+
+
             }
             xmlsb.append("</persons>\n");
 
