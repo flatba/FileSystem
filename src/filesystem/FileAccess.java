@@ -30,6 +30,10 @@ import org.xml.sax.SAXException;
 
 public class FileAccess {
 
+    public StringBuilder xmlSb;
+//    public String[] columns = null;
+    public String[] columns;
+
     // Read CSV Format File
     public ArrayList<PatientInformation> readCsvFormat(String Path, int combo) {
 
@@ -131,6 +135,7 @@ public class FileAccess {
 
             if(filePath.lastIndexOf(".csv") > 0) {
                 // make xml format
+
                 sb.append("<?xml version=\"1.0\"?>\n<persons>\n");
                 while ((ReadLine = buffer.readLine()) != null) {
                     // 本来は変換が必要だが、java内部でUTF-8の変換をやってくれている。
@@ -144,6 +149,9 @@ public class FileAccess {
                     // line 2 : columns[] = { "患者ID", "氏名", "性別", "生年月日", "年齢", "追加日" }
                     // line n : ...
                     // convert XML Format
+
+                    //personの切り出しができたら、入れていくようにする。
+
                     sb.append("<person>\n<id>");
                     sb.append(columns[0]); // id
                     sb.append("</id>\n<name>");
@@ -163,7 +171,8 @@ public class FileAccess {
                 System.out.println("指定されたファイルはcsv形式のためxml形式に変換しました。");
 
             }else if(filePath.lastIndexOf(".xml") > 0) {
-                // Read xml Format return StringBuilder　
+                // Read xml Format return StringBuilder
+                // xmlが読み込まれた場合は、タグ情報を付与する必要が無いのでこちらの何もしない処理をする。
             }
 
             input.close();
@@ -246,6 +255,46 @@ public class FileAccess {
 
     }
 
+    // create xml Format
+    // １：createPersonsの切り出し
+    public StringBuilder createPersons(ArrayList dataList) {
+        xmlSb = new StringBuilder();
+        xmlSb.append("<?xml version=\"1.0\"?>\n");
+        xmlSb.append("<persons>\n");
+        xmlSb = createPerson(dataList);
+        xmlSb.append("</persons>\n");
+        return xmlSb;
+    }
+
+    // ２：createPersonの切り出し
+    public StringBuilder createPerson(ArrayList dataList) {
+        for (int i = 0; i < dataList.size(); i++){
+                String str = dataList.get(i).toString();
+                String[] columns = str.split(",",-1);
+                xmlSb.append("        <person>\n");
+                xmlSb.append(createPatientInformationTags(columns));
+                xmlSb.append("        </person>\n");
+            }
+
+        return xmlSb;
+    }
+
+    // ３：createTagsの切り出し
+    public StringBuilder createPatientInformationTags(String[] columns) {
+        StringBuilder xmlSbTmp = new StringBuilder();
+
+        xmlSbTmp.append("            <id>" + columns[0] + "</id>\n");
+        xmlSbTmp.append("            <name>" + columns[1] + "</name>\n");
+        xmlSbTmp.append("            <sex>" + columns[2] + "</sex>\n");
+        xmlSbTmp.append("            <birthday>" + columns[3] + "</birthday>\n");
+        xmlSbTmp.append("            <age>" + columns[4] + "</age>\n");
+        xmlSbTmp.append("            <date>" + columns[5] + "</date>\n");
+
+        return xmlSbTmp;
+
+    }
+
+    // ４：クラスに切り分け
 
     // Write XML Format File
     public void writeXml(ArrayList dataList, String filePath){
@@ -256,43 +305,14 @@ public class FileAccess {
                 outputFile = new File(filePath);
             }
 
-            StringBuilder xmlsb = new StringBuilder();
-
-            // make xml format
-            xmlsb.append("<?xml version=\"1.0\"?>\n    <persons>\n");
-            for (int i = 0; i < dataList.size(); i++){
-                String str = dataList.get(i).toString();
-
-//                xmlsb.append(func(str));をつくってやる
-//                createPerson();
-//                createPersons();
-//                を作れるとなお良い
-                
-                String[] columns = str.split(",",-1);
-                xmlsb.append("        <person>\n            <id>");
-                xmlsb.append(columns[0]); // id
-                xmlsb.append("</id>\n            <name>");
-                xmlsb.append(columns[1]); //name
-                xmlsb.append("</name>\n            <sex>");
-                xmlsb.append(columns[2]); // sex
-                xmlsb.append("</sex>\n            <birthday>");
-                xmlsb.append(columns[3]); //birthday
-                xmlsb.append("</birthday>\n            <age>");
-                xmlsb.append(columns[4]); // age
-                xmlsb.append("</age>\n            <date>");
-                xmlsb.append(columns[5]); // date
-                xmlsb.append("</date>\n        </person>\n");
-
-
-
-            }
-            xmlsb.append("</persons>\n");
+            StringBuilder xmlSb = new StringBuilder();
+            xmlSb = createPersons(dataList);
 
             try {
                 FileOutputStream fos = new FileOutputStream(outputFile);
                 OutputStreamWriter osw = new OutputStreamWriter(fos);
                 PrintWriter pw = new PrintWriter(osw);
-                pw.println(xmlsb);
+                pw.println(xmlSb);
                 pw.close();
                 System.out.println("ファイルの出力が完了しました。");
 

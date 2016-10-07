@@ -145,7 +145,7 @@ class FileSystem extends JFrame {
             }
             birthday.setText(info.getBirthday());
             age.setText(info.getAge());
-            date.setText(info.getAge());
+            date.setText(info.getDate());
         }
         // JFrame, JDialog
         int r = JOptionPane.showConfirmDialog(
