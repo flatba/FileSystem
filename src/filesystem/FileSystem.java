@@ -371,6 +371,7 @@ class FileSystem extends JFrame {
 
         // ボタン設定------------------------------------------------------------
         FileAccess fa = new FileAccess();
+        FileCreate fc = new FileCreate();
         selectButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -422,10 +423,10 @@ class FileSystem extends JFrame {
                     // data = fa.readCsvFormat(filePath, comboData);
 
                     // Convert CSV to XML Format
-                    convertXmlData = fa.convertXmlFormat(filePath, comboData);
+                    convertXmlData = fc.convertXmlFormat(filePath, comboData);
 
                 }else if(filePath.lastIndexOf(".xml") > 0) {
-                    convertXmlData = fa.convertXmlFormat(filePath, comboData);
+                    convertXmlData = fc.convertXmlFormat(filePath, comboData);
                 }
 
                     // output xml Format：xmlフォーマットの展開
