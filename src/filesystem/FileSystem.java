@@ -261,16 +261,12 @@ class FileSystem extends JFrame {
         patientInformationPanelField.add(age);
         date = new JTextField("", 20);
         patientInformationPanelField.add(date);
-//        imageLabel.setText(imagePath);
-//        patientInformationPanelField.add(imageLabel);
-
 
         DialogPanel.add(patientInformationPanelItem);
         DialogPanel.add(patientInformationPanelField);
         DialogPanelBase.add(DialogPanel);
 
-
-
+        // Dialog用のOverride
         imageButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -287,12 +283,9 @@ class FileSystem extends JFrame {
                     selectedLabel.setText(file.getAbsolutePath());
                     imagePath = file.getAbsolutePath();
                     imageLabel.setText(imagePath);
-
-//                    patientInformationPanelField.remove(6);
-
                     patientInformationPanelField.add(imageLabel);
                     patientInformationPanelField.updateUI();
-//                    selectField.setText(imagePath);
+
                 }else if (selected == JFileChooser.CANCEL_OPTION){
                     System.out.println("キャンセルされました");
                 }else if (selected == JFileChooser.ERROR_OPTION){
@@ -309,6 +302,7 @@ class FileSystem extends JFrame {
     }
 
     public void paste(PatientInformation pasteInfo) {
+        int selectedRow = getSelectedRow();
         ArrayList<String> ret = new ArrayList<>();
         ret.add(pasteInfo.getId());
         ret.add(pasteInfo.getName());
@@ -318,7 +312,7 @@ class FileSystem extends JFrame {
         ret.add(pasteInfo.getDate());
         ret.add(pasteInfo.getImage());
         DefaultTableModel model = (DefaultTableModel)loadFieldTable.getModel();
-        model.addRow(ret.toArray());
+        model.insertRow(selectedRow + 1 , ret.toArray());
     }
 
     public void copyPaste(boolean check){
