@@ -17,6 +17,7 @@ public class PatientInformation {
     public static final int COLUMN_BIRTHDAY = 3;
     public static final int COLUMN_AGE = 4;
     public static final int COLUMN_DATE = 5;
+    public static final int COLUMN_IMAGE = 6;
 
     private String id;
     private String name;
@@ -24,6 +25,7 @@ public class PatientInformation {
     private String birthday;
     private String age;
     private String date;
+    private String image;
 
     public String getId(){
         return id;
@@ -67,6 +69,13 @@ public class PatientInformation {
         this.date = date;
     }
 
+    public String getImage(){
+        return image;
+    }
+    public void setImage(String image){
+        this.image = image;
+    }
+
     // CSVフォーマットで返す
     public String convertCsvFormat() {
         StringBuilder sb = new StringBuilder();
@@ -81,6 +90,8 @@ public class PatientInformation {
         sb.append(getAge());
         sb.append(",");
         sb.append(getDate());
+        sb.append(",");
+        sb.append(getImage());
 
         return sb.toString();
     }
@@ -100,6 +111,8 @@ public class PatientInformation {
         sb.append(getAge()).append(",");
         sb.append("追加日：");
         sb.append(getDate()).append(",");
+        sb.append("写真：");
+        sb.append(getImage()).append(",");
 
         return sb.toString();
     }

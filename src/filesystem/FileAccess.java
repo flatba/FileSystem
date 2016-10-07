@@ -67,6 +67,7 @@ public class FileAccess {
                 info.setBirthday(columns[PatientInformation.COLUMN_BIRTHDAY]);
                 info.setAge(columns[PatientInformation.COLUMN_AGE]);
                 info.setDate(columns[PatientInformation.COLUMN_DATE]);
+                info.setImage(columns[PatientInformation.COLUMN_IMAGE]);
                 columnsCsvArr.add(info);
             }
 
@@ -83,7 +84,6 @@ public class FileAccess {
         return columnsCsvArr;
 
     }
-
 
     // Write CSV Format File
     public void writeCsv(String filePath, ArrayList<String> dataList) {
@@ -106,10 +106,6 @@ public class FileAccess {
             e.printStackTrace();
         }
     }
-
-
-
-
 
     // Read XML Format File
     public ArrayList readXmlFormat(StringBuilder convertXmlData, String filePath) throws ParserConfigurationException, SAXException, XPathExpressionException {
@@ -160,6 +156,10 @@ public class FileAccess {
                 if(node != null) {
                     info.setDate(node.getFirstChild().getNodeValue());
                 }
+                node = (Node)xpath.evaluate("image", pNode, XPathConstants.NODE);
+                if(node != null) {
+                    info.setImage(node.getFirstChild().getNodeValue());
+                }
 
                 xmlElement.add(info);
 
@@ -176,8 +176,6 @@ public class FileAccess {
         return xmlElement;
 
     }
-
-
 
     // Write XML Format File
     public void writeXml(ArrayList dataList, String filePath){

@@ -23,7 +23,7 @@ public class FileCreate {
     public String[] columns;
 
     // create xml Format
-    // １：createPersonsの切り出し
+    // １：createPersons
     public StringBuilder createPersons(ArrayList dataList) {
         xmlSb = new StringBuilder();
         xmlSb.append("<?xml version=\"1.0\"?>\n");
@@ -33,7 +33,7 @@ public class FileCreate {
         return xmlSb;
     }
 
-    // ２：createPersonの切り出し
+    // ２：createPerson
     public StringBuilder createPerson(ArrayList dataList) {
         for (int i = 0; i < dataList.size(); i++){
                 String str = dataList.get(i).toString();
@@ -46,7 +46,7 @@ public class FileCreate {
         return xmlSb;
     }
 
-    // ３：createTagsの切り出し
+    // ３：createTags
     public StringBuilder createPatientInformationTags(String[] columns) {
         StringBuilder xmlSbTmp = new StringBuilder();
 
@@ -56,12 +56,11 @@ public class FileCreate {
         xmlSbTmp.append("            <birthday>" + columns[3] + "</birthday>\n");
         xmlSbTmp.append("            <age>" + columns[4] + "</age>\n");
         xmlSbTmp.append("            <date>" + columns[5] + "</date>\n");
+        xmlSbTmp.append("            <image>" + columns[6] + "</image>\n");
 
         return xmlSbTmp;
 
     }
-
-    // ４：クラスに切り分け
 
     // Convert CSV to XML Format File：コンバートと読み込み時にも使用
     public StringBuilder convertXmlFormat(String filePath, int combo) {
