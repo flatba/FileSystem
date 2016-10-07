@@ -349,7 +349,7 @@ class FileSystem extends JFrame {
     public FileSystem(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("ファイルの読み書き");
-        setBounds(200, 100, 800, 700); // 出力場所 (x, y, width, heigft);
+        setBounds(200, 100, 680, 700); // 出力場所 (x, y, width, heigft);
 
         patientInformationArr = new ArrayList();
 
@@ -716,8 +716,8 @@ class FileSystem extends JFrame {
                         if(cellCol <= 5) {
                             update();
                         }else if(cellCol == 6){
-                            System.out.println("行" + cellRow + "::" + "列" + cellCol);
-                            System.out.println(loadFieldTable.getValueAt(cellRow, cellCol));
+//                            System.out.println("行" + cellRow + "::" + "列" + cellCol);
+//                            System.out.println(loadFieldTable.getValueAt(cellRow, cellCol));
                             String cellVal = loadFieldTable.getValueAt(cellRow, cellCol).toString(); // クリックされたセル内の値をString型で取得
                             imageOpen(cellVal);
                         }
