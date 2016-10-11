@@ -33,22 +33,15 @@ public class FileAccess {
     FileCreate fc;
 
     //
-    public void func() {
+    public void fc() {
         fc = new FileCreate();
     }
-
-//    // mainの方から呼び出せば良い関数のため、今後削除予定
-//    public String imagePathCut(String imagePath) {
-//        int imagePathNum = imagePath.lastIndexOf("\\");
-//        System.out.println(imagePath.substring(imagePathNum+1, imagePath.length()));
-//        imagePath = imagePath.substring(imagePathNum+1, imagePath.length());
-//        return imagePath;
-//    }
 
     // Read CSV Format File
     public ArrayList<PatientInformation> readCsvFormat(String Path, int combo) {
 
         ArrayList<PatientInformation> columnsCsvArr = new ArrayList();
+        fc();
 
         try {
             File file = new File("");
@@ -72,7 +65,7 @@ public class FileAccess {
             while ((ReadLine = buffer.readLine()) != null) {
                 byte[] b = ReadLine.getBytes();
                 ReadLine = new String(b, "UTF-8");
-                String[] columns = ReadLine.split(",",-1);
+                String[] columns = fc.splitData(ReadLine);
                 PatientInformation info = new PatientInformation();
                 info.setId(columns[PatientInformation.COLUMN_ID]);
                 info.setName(columns[PatientInformation.COLUMN_NAME]);

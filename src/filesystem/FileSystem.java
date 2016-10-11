@@ -107,35 +107,36 @@ class FileSystem extends JFrame {
 
     PatientInformation pasteInfo;
 
-
-
     public static void main(String[] args) {
         FileSystem f = new FileSystem();
-
-
     }
 
     // 新規患者入力時、未入力がある場合にエラーダイアログを表示する
-//    public void error() {
+//    public boolean error(ArrayList errorArr) {
 //        // 条件が良くないので適切な状態で判定ができていない。
-//        if(patientInformationArrTmp.indexOf("") >= 0){
+//        System.out.println(errorArr.size());
+//        if(errorArr.size() <= 8) {
 //            JOptionPane.showMessageDialog(this, "記入漏れがあります。");
-//            patientInformationArrTmp.clear();
+//            return false;
 //        }
+//        return true;
 //    }
 
-    public void add(){
-        JPanel DialogPanelBase = createDialog();
-
+    public void createShowConfirmDialog(String title, JPanel DialogPanelBase) {
         // add Dialogの生成
         int r = JOptionPane.showConfirmDialog(
             FileSystem.this, // オーナーウィンドウ
-            DialogPanelBase, // メッセージ
-            "追加", // タイトル
+            DialogPanelBase, // メッセージ（DialogPanelBaseにしておかないと意図した表示にならない）メッセージの代わりにパネルを入れ込んでいる。
+            title, // タイトル
             JOptionPane.OK_CANCEL_OPTION,	// オプション（ボタンの種類）
             JOptionPane.QUESTION_MESSAGE	// メッセージタイプ（アイコンの種類）
         );
-        System.out.println("flag01");
+    }
+
+    public void add(){
+        // add Dialogの生成
+        JPanel DialogPanelBase = createDialog();
+        createShowConfirmDialog("追加", DialogPanelBase);
         dataSet(true);
     }
 
@@ -174,13 +175,7 @@ class FileSystem extends JFrame {
             patientInformationPanelField.add(imageLabel);
         }
         // JFrame, JDialog
-        int r = JOptionPane.showConfirmDialog(
-            FileSystem.this, // オーナウィンドウ
-            DialogPanelBase, // メッセージ（DialogPanelBaseにしておかないと意図した表示にならない）メッセージの代わりにパネルを入れ込んでいる。
-            "編集", // タイトル
-            JOptionPane.OK_CANCEL_OPTION,	// オプション（ボタンの種類）
-            JOptionPane.QUESTION_MESSAGE	// メッセージタイプ（アイコンの種類）
-        );
+        createShowConfirmDialog("編集", DialogPanelBase);
         dataSet(false);
     }
 
@@ -194,9 +189,8 @@ class FileSystem extends JFrame {
             return;
         }
         if(check == false){
-            System.out.println("flag02");
-            int selectedRow = loadFieldTable.getSelectedRow();
             // データの反映 ： update時の処理
+            int selectedRow = loadFieldTable.getSelectedRow();
             loadFieldTable.setValueAt(id.getText(), selectedRow, 0);
             loadFieldTable.setValueAt(name.getText(), selectedRow, 1);
             loadFieldTable.setValueAt(sex, selectedRow, 2);
@@ -206,8 +200,10 @@ class FileSystem extends JFrame {
             imagePath = imagePathCut(imagePath);
             loadFieldTable.setValueAt(imagePath, selectedRow, 6);
 
+            // 記入漏れがある場合のエラーダイアログ
+//            error();
+
         }else{
-            System.out.println("flag03");
             // データの反映 : add時の処理
             ArrayList<String> ret = new ArrayList<>();
             ret.add(id.getText());
@@ -216,7 +212,15 @@ class FileSystem extends JFrame {
             ret.add(birthday.getText().replaceAll("-", "/"));
             ret.add(age.getText());
             ret.add(date.getText());
+            imagePath = imagePathCut(imagePath);
             ret.add(imagePath);
+
+            // 記入漏れがある場合のエラーダイアログ
+//            boolean checkField =  error(ret);
+//            if(checkField == false){
+//                return;
+//            }
+
             DefaultTableModel model = (DefaultTableModel)loadFieldTable.getModel();
             model.addRow(ret.toArray());
         }
@@ -256,7 +260,6 @@ class FileSystem extends JFrame {
         patientInformationPanelItem.add(dateLabel);
         imageButton = new JButton("写真");
         patientInformationPanelItem.add(imageButton);
-        // imageボタンにdialogの表示
 
         id = new JTextField("", 20);
         patientInformationPanelField.add(id);
@@ -356,13 +359,7 @@ class FileSystem extends JFrame {
 
     public void imageSelect(){
         JPanel DialogPanelBase = createDialog();
-        int r = JOptionPane.showConfirmDialog(
-            FileSystem.this, // オーナーウィンドウ
-            DialogPanelBase, // メッセージ
-            "画像の選択", // タイトル
-            JOptionPane.OK_CANCEL_OPTION,	// オプション（ボタンの種類）
-            JOptionPane.QUESTION_MESSAGE	// メッセージタイプ（アイコンの種類）
-        );
+        createShowConfirmDialog("画像の選択", DialogPanelBase);
     }
 
     public FileSystem(){
@@ -457,12 +454,12 @@ class FileSystem extends JFrame {
         final String[] columnNames = {"ID", "氏名", "性別", "生年月日", "年齢", "追加日", "写真"}; // カラムを増やしたければここに追加するだけ
         patientInformationModel = new DefaultTableModel(columnNames, 0);
         loadFieldTable.setModel(patientInformationModel);
-        // カラムの幅設定
+        // カラム幅の設定
         loadFieldTable.getColumn("ID").setPreferredWidth(30);
         loadFieldTable.getColumn("氏名").setPreferredWidth(150);
         loadFieldTable.getColumn("性別").setPreferredWidth(50);
         loadFieldTable.getColumn("生年月日").setPreferredWidth(150);
-        loadFieldTable.getColumn("年齢").setPreferredWidth(50);
+        loadFieldTable.getColumn("年齢").setPreferredWidth(40);
         loadFieldTable.getColumn("追加日").setPreferredWidth(150);
         loadFieldTable.getColumn("写真").setPreferredWidth(150);
         // カラム設定------------------------------------------------------------
