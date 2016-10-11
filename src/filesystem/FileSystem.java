@@ -72,7 +72,7 @@ class FileSystem extends JFrame {
     public int row;
     public int comboData;
     private JTextField date;
-    private JTextField image;
+//    private JTextField image;
     private String imagePath;
 
     // Label
@@ -107,8 +107,11 @@ class FileSystem extends JFrame {
 
     PatientInformation pasteInfo;
 
+
+
     public static void main(String[] args) {
         FileSystem f = new FileSystem();
+
 
     }
 
@@ -131,6 +134,13 @@ class FileSystem extends JFrame {
             JOptionPane.QUESTION_MESSAGE	// メッセージタイプ（アイコンの種類）
         );
         dataSet(true);
+    }
+
+    public String imagePathCut(String imagePath) {
+        int imagePathNum = imagePath.lastIndexOf("\\");
+        System.out.println(imagePath.substring(imagePathNum+1, imagePath.length()));
+        imagePath = imagePath.substring(imagePathNum+1, imagePath.length());
+        return imagePath;
     }
 
     public void update(){
@@ -156,7 +166,8 @@ class FileSystem extends JFrame {
             age.setText(info.getAge());
             date.setText(info.getDate());
             imagePath = info.getImage();
-            System.out.println(imagePath);
+            imagePath = imagePathCut(imagePath);
+
             imageLabel.setText(imagePath);
             patientInformationPanelField.add(imageLabel);
         }
@@ -189,6 +200,7 @@ class FileSystem extends JFrame {
             loadFieldTable.setValueAt(birthday.getText().replaceAll("-", "/"), selectedRow, 3);
             loadFieldTable.setValueAt(age.getText(), selectedRow, 4);
             loadFieldTable.setValueAt(date.getText(), selectedRow, 5);
+            imagePath = imagePathCut(imagePath);
             loadFieldTable.setValueAt(imagePath, selectedRow, 6);
 
         }else{
@@ -200,6 +212,7 @@ class FileSystem extends JFrame {
             ret.add(birthday.getText().replaceAll("-", "/"));
             ret.add(age.getText());
             ret.add(date.getText());
+            ret.add(imagePath);
             DefaultTableModel model = (DefaultTableModel)loadFieldTable.getModel();
             model.addRow(ret.toArray());
         }
@@ -282,7 +295,9 @@ class FileSystem extends JFrame {
                     JLabel selectedLabel = new JLabel();
                     selectedLabel.setText(file.getAbsolutePath());
                     imagePath = file.getAbsolutePath();
-                    imageLabel.setText(imagePath);
+                    String imagePathCut = imagePathCut(imagePath);
+                    System.out.println(imagePath);
+                    imageLabel.setText(imagePathCut);
                     patientInformationPanelField.add(imageLabel);
                     patientInformationPanelField.updateUI();
 
@@ -329,6 +344,7 @@ class FileSystem extends JFrame {
         JFrame frame = new JFrame("画像表示");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(500, 400);
+        imagePath = "C:\\Users\\y_hiraba\\Documents\\tmp\\images\\" + imagePath;
         ImageIcon icon = new ImageIcon(imagePath);
         JLabel label = new JLabel(icon);
         frame.getContentPane().add(label);

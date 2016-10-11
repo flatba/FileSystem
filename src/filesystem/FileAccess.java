@@ -32,6 +32,14 @@ public class FileAccess {
 
     FileCreate fc = new FileCreate();
 
+
+    public String imagePathCut(String imagePath) {
+        int imagePathNum = imagePath.lastIndexOf("\\");
+        System.out.println(imagePath.substring(imagePathNum+1, imagePath.length()));
+        imagePath = imagePath.substring(imagePathNum+1, imagePath.length());
+        return imagePath;
+    }
+
     // Read CSV Format File
     public ArrayList<PatientInformation> readCsvFormat(String Path, int combo) {
 
@@ -158,7 +166,7 @@ public class FileAccess {
                 }
                 node = (Node)xpath.evaluate("image", pNode, XPathConstants.NODE);
                 if(node != null) {
-                    info.setImage(node.getFirstChild().getNodeValue());
+                    info.setImage(imagePathCut(node.getFirstChild().getNodeValue()));
                 }
 
                 xmlElement.add(info);

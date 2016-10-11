@@ -92,7 +92,6 @@ public class FileCreate {
                     sbTmp.append("        <person>\n");
                     sbTmp.append(createPatientInformationTags(columns));
                     sbTmp.append("        </person>\n");
-                    System.out.println(sbTmp);
                     sb.append(sbTmp);
                 }
                 sb.append("</persons>\n");
