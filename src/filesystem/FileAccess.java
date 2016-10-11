@@ -30,15 +30,20 @@ import org.xml.sax.SAXException;
 
 public class FileAccess {
 
-    FileCreate fc = new FileCreate();
+    FileCreate fc;
 
-    // mainの方から呼び出せば良い関数のため、今後削除予定
-    public String imagePathCut(String imagePath) {
-        int imagePathNum = imagePath.lastIndexOf("\\");
-        System.out.println(imagePath.substring(imagePathNum+1, imagePath.length()));
-        imagePath = imagePath.substring(imagePathNum+1, imagePath.length());
-        return imagePath;
+    //
+    public void func() {
+        fc = new FileCreate();
     }
+
+//    // mainの方から呼び出せば良い関数のため、今後削除予定
+//    public String imagePathCut(String imagePath) {
+//        int imagePathNum = imagePath.lastIndexOf("\\");
+//        System.out.println(imagePath.substring(imagePathNum+1, imagePath.length()));
+//        imagePath = imagePath.substring(imagePathNum+1, imagePath.length());
+//        return imagePath;
+//    }
 
     // Read CSV Format File
     public ArrayList<PatientInformation> readCsvFormat(String Path, int combo) {
@@ -166,7 +171,7 @@ public class FileAccess {
                 }
                 node = (Node)xpath.evaluate("image", pNode, XPathConstants.NODE);
                 if(node != null) {
-                    info.setImage(imagePathCut(node.getFirstChild().getNodeValue()));
+                    info.setImage(FileSystem.imagePathCut(node.getFirstChild().getNodeValue()));
                 }
 
                 xmlElement.add(info);

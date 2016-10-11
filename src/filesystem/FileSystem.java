@@ -126,6 +126,8 @@ class FileSystem extends JFrame {
 
     public void add(){
         JPanel DialogPanelBase = createDialog();
+
+        // add Dialogの生成
         int r = JOptionPane.showConfirmDialog(
             FileSystem.this, // オーナーウィンドウ
             DialogPanelBase, // メッセージ
@@ -133,12 +135,12 @@ class FileSystem extends JFrame {
             JOptionPane.OK_CANCEL_OPTION,	// オプション（ボタンの種類）
             JOptionPane.QUESTION_MESSAGE	// メッセージタイプ（アイコンの種類）
         );
+        System.out.println("flag01");
         dataSet(true);
     }
 
-    public String imagePathCut(String imagePath) {
+    public static String imagePathCut(String imagePath) {
         int imagePathNum = imagePath.lastIndexOf("\\");
-        System.out.println(imagePath.substring(imagePathNum+1, imagePath.length()));
         imagePath = imagePath.substring(imagePathNum+1, imagePath.length());
         return imagePath;
     }
@@ -192,6 +194,7 @@ class FileSystem extends JFrame {
             return;
         }
         if(check == false){
+            System.out.println("flag02");
             int selectedRow = loadFieldTable.getSelectedRow();
             // データの反映 ： update時の処理
             loadFieldTable.setValueAt(id.getText(), selectedRow, 0);
@@ -204,6 +207,7 @@ class FileSystem extends JFrame {
             loadFieldTable.setValueAt(imagePath, selectedRow, 6);
 
         }else{
+            System.out.println("flag03");
             // データの反映 : add時の処理
             ArrayList<String> ret = new ArrayList<>();
             ret.add(id.getText());
@@ -296,7 +300,6 @@ class FileSystem extends JFrame {
                     selectedLabel.setText(file.getAbsolutePath());
                     imagePath = file.getAbsolutePath();
                     String imagePathCut = imagePathCut(imagePath);
-                    System.out.println(imagePath);
                     imageLabel.setText(imagePathCut);
                     patientInformationPanelField.add(imageLabel);
                     patientInformationPanelField.updateUI();
@@ -651,7 +654,7 @@ class FileSystem extends JFrame {
                     // 選択している行のみ削除
                     int[] selection = loadFieldTable.getSelectedRows();
                     int selectionRow = loadFieldTable.getSelectedColumn();
-                    System.out.print(selectionRow);
+//                    System.out.print(selectionRow);
                     if( selectionRow < 0 ) {
                         BottomPanel.removeAll();
                         BottomPanel.add(new JLabel("選択されていません。"));
@@ -687,15 +690,6 @@ class FileSystem extends JFrame {
                 update();
             }
         });
-
-        addMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                add();
-            }
-        });
-
-
 
         // MouseEvent ----------------------------------------------------------
         loadFieldTable.addMouseListener(new MouseAdapter() {
