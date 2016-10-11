@@ -32,7 +32,7 @@ public class FileAccess {
 
     FileCreate fc = new FileCreate();
 
-
+    // mainの方から呼び出せば良い関数のため、今後削除予定
     public String imagePathCut(String imagePath) {
         int imagePathNum = imagePath.lastIndexOf("\\");
         System.out.println(imagePath.substring(imagePathNum+1, imagePath.length()));

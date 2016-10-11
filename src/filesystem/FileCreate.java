@@ -33,11 +33,16 @@ public class FileCreate {
         return xmlSb;
     }
 
+    public String[] splitData(String str) {
+        String[] columns = str.split(",",-1);
+        return columns;
+    }
+
     // ２：createPerson
     public StringBuilder createPerson(ArrayList dataList) {
         for (int i = 0; i < dataList.size(); i++){
                 String str = dataList.get(i).toString();
-                String[] columns = str.split(",",-1);
+                String[] columns = splitData(str);
                 xmlSb.append("        <person>\n");
                 xmlSb.append(createPatientInformationTags(columns));
                 xmlSb.append("        </person>\n");
@@ -87,7 +92,7 @@ public class FileCreate {
                 // make xml format
                 sb.append("<?xml version=\"1.0\"?>\n<persons>\n");
                 while ((ReadLine = buffer.readLine()) != null) {
-                    String[] columns = ReadLine.split(",",-1);
+                    String[] columns = splitData(ReadLine);
                     StringBuilder sbTmp = new StringBuilder();
                     sbTmp.append("        <person>\n");
                     sbTmp.append(createPatientInformationTags(columns));

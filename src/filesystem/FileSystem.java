@@ -451,9 +451,17 @@ class FileSystem extends JFrame {
         // 各Panelの表示---------------------------------------------------------
 
         // カラム設定------------------------------------------------------------
-        final String[] columnNames = {"患者ID", "氏名", "性別", "生年月日", "年齢", "追加日", "写真"};
+        final String[] columnNames = {"ID", "氏名", "性別", "生年月日", "年齢", "追加日", "写真"}; // カラムを増やしたければここに追加するだけ
         patientInformationModel = new DefaultTableModel(columnNames, 0);
         loadFieldTable.setModel(patientInformationModel);
+        // カラムの幅設定
+        loadFieldTable.getColumn("ID").setPreferredWidth(30);
+        loadFieldTable.getColumn("氏名").setPreferredWidth(150);
+        loadFieldTable.getColumn("性別").setPreferredWidth(50);
+        loadFieldTable.getColumn("生年月日").setPreferredWidth(150);
+        loadFieldTable.getColumn("年齢").setPreferredWidth(50);
+        loadFieldTable.getColumn("追加日").setPreferredWidth(150);
+        loadFieldTable.getColumn("写真").setPreferredWidth(150);
         // カラム設定------------------------------------------------------------
 
         // ボタン設定------------------------------------------------------------
