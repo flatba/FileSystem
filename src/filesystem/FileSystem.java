@@ -383,10 +383,6 @@ class FileSystem extends JFrame {
         patientPanel.setBackground(new Color(232,226,232)); // set Color
         patientPanel.setLayout(new GridLayout(2,3));
 
-//        ButtonPanel1.setBackground(new Color(140,140,140)); // set Color
-//        ButtonPanel2.setBackground(new Color(140,140,140)); // set Color
-//        TopPanel.setBackground(new Color(30,232,203)); // set Color
-
         selectField = new JTextField(filePath, 30);
         TopPanel.add(selectField);
         selectButton = new JButton("選択...");
@@ -402,9 +398,7 @@ class FileSystem extends JFrame {
         save = new JButton("保存");
         ButtonPanel1.add(load);
         ButtonPanel1.add(save);
-
         TopPanel.add(ButtonPanel1);
-        // Top Panelの設定-------------------------------------------------------
 
         // Center Panelの設定----------------------------------------------------
         CenterPanel = new JPanel();
@@ -415,8 +409,6 @@ class FileSystem extends JFrame {
         JScrollPane loadFieldTableScollpane = new JScrollPane(loadFieldTable);
         loadFieldTableScollpane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         CenterPanel.add(loadFieldTableScollpane);
-//        CenterPanel.setBackground(new Color(30,232,203)); // set Color
-        // Center Panelの設定----------------------------------------------------
 
         // ポップアップ（右クリックメニュー）の設定----------------------------------
         JPopupMenu submenuPopup;
@@ -426,7 +418,6 @@ class FileSystem extends JFrame {
         JMenuItem copyMenuItem = new JMenuItem("コピー");
         JMenuItem pasteMenuItem = new JMenuItem("貼り付け");
         JMenuItem deleteMenuItem = new JMenuItem("削除");
-
         submenuPopup.add(addMenuItem);
         submenuPopup.add(updateMenuItem);
         submenuPopup.addSeparator();
@@ -434,12 +425,16 @@ class FileSystem extends JFrame {
         submenuPopup.add(pasteMenuItem);
         submenuPopup.addSeparator();
         submenuPopup.add(deleteMenuItem);
-        // ポップアップ（右クリックメニュー）の設定----------------------------------
 
         // BottomPanelの設定-----------------------------------------------------
         JPanel BottomPanel = new JPanel();
+
+        // set Color-----------------------------------------------------
+//        ButtonPanel1.setBackground(new Color(140,140,140)); // set Color
+//        ButtonPanel2.setBackground(new Color(140,140,140)); // set Color
+//        TopPanel.setBackground(new Color(30,232,203)); // set Color
+//        CenterPanel.setBackground(new Color(30,232,203)); // set Color
 //        BottomPanel.setBackground(new Color(30,232,203)); // set Color
-        // BottomPanelの設定-----------------------------------------------------
 
         // 各Panelの表示---------------------------------------------------------
         Container contentPane = getContentPane();
@@ -448,7 +443,7 @@ class FileSystem extends JFrame {
         contentPane.add(CenterPanel);
         contentPane.add(submenuPopup);
         contentPane.add(BottomPanel);
-        // 各Panelの表示---------------------------------------------------------
+
 
         // カラム設定------------------------------------------------------------
         final String[] columnNames = {"ID", "氏名", "性別", "生年月日", "年齢", "追加日", "写真"}; // カラムを増やしたければここに追加するだけ
@@ -462,7 +457,6 @@ class FileSystem extends JFrame {
         loadFieldTable.getColumn("年齢").setPreferredWidth(40);
         loadFieldTable.getColumn("追加日").setPreferredWidth(150);
         loadFieldTable.getColumn("写真").setPreferredWidth(150);
-        // カラム設定------------------------------------------------------------
 
         // ボタン設定------------------------------------------------------------
         FileAccess fa = new FileAccess();
@@ -651,7 +645,7 @@ class FileSystem extends JFrame {
                     // 選択している行のみ削除
                     int[] selection = loadFieldTable.getSelectedRows();
                     int selectionRow = loadFieldTable.getSelectedColumn();
-//                    System.out.print(selectionRow);
+
                     if( selectionRow < 0 ) {
                         BottomPanel.removeAll();
                         BottomPanel.add(new JLabel("選択されていません。"));
