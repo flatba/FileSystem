@@ -11,13 +11,13 @@ package filesystem;
  */
 public class PatientInformation {
 
-    public static final int COLUMN_ID = 0;
-    public static final int COLUMN_NAME = 1;
-    public static final int COLUMN_SEX = 2;
+    public static final int COLUMN_ID       = 0;
+    public static final int COLUMN_NAME     = 1;
+    public static final int COLUMN_SEX      = 2;
     public static final int COLUMN_BIRTHDAY = 3;
-    public static final int COLUMN_AGE = 4;
-    public static final int COLUMN_DATE = 5;
-    public static final int COLUMN_IMAGE = 6;
+    public static final int COLUMN_AGE      = 4;
+    public static final int COLUMN_DATE     = 5;
+    public static final int COLUMN_IMAGE    = 6;
 
     private String id;
     private String name;
@@ -78,6 +78,7 @@ public class PatientInformation {
 
     // CSVフォーマットで返す
     public String convertCsvFormat() {
+        
         StringBuilder sb = new StringBuilder();
         sb.append(getId());
         sb.append(",");
@@ -92,12 +93,13 @@ public class PatientInformation {
         sb.append(getDate());
         sb.append(",");
         sb.append(getImage());
-
         return sb.toString();
+        
     }
 
     // 文字列として返す
     public String patientToString() {
+        
         StringBuilder sb = new StringBuilder();
         sb.append("患者ID：");
         sb.append(getId()).append(",");
@@ -113,8 +115,8 @@ public class PatientInformation {
         sb.append(getDate()).append(",");
         sb.append("写真：");
         sb.append(getImage()).append(",");
-
         return sb.toString();
+        
     }
 
 
