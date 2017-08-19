@@ -156,7 +156,9 @@ class FileSystem extends JFrame {
             JOptionPane.showMessageDialog(FileSystem.this, "選択されていません。");
             return;
         }else{
+            // ID
             id.setText(info.getId());
+            // 名前
             name.setText(info.getName());
             if(info.getSex().equals("男")){
                 men.setSelected(true);
@@ -165,21 +167,28 @@ class FileSystem extends JFrame {
                 men.setSelected(false);
                 woman.setSelected(true);
             }
+            // 生年月日
             birthday.setText(info.getBirthday());
+            // 年齢
             age.setText(info.getAge());
+            // 日付
             date.setText(info.getDate());
+            // 画像
             imagePath = info.getImage();
             imagePath = imagePathCut(imagePath);
-
             imageLabel.setText(imagePath);
             patientInformationPanelField.add(imageLabel);
+            
         }
+        
         // JFrame, JDialog
         createShowConfirmDialog("編集", DialogPanelBase);
         dataSet(false);
+        
     }
 
     private void dataSet(boolean check) {
+        
         if(men.isSelected() == true){
             sex = "男";
         }else if(woman.isSelected() == true){
@@ -188,6 +197,7 @@ class FileSystem extends JFrame {
             JOptionPane.showMessageDialog(this, "性別を選択してください。");
             return;
         }
+        
         if(check == false){
             // データの反映 ： update時の処理
             int selectedRow = loadFieldTable.getSelectedRow();
@@ -201,9 +211,10 @@ class FileSystem extends JFrame {
             loadFieldTable.setValueAt(imagePath, selectedRow, 6);
 
             // 記入漏れがある場合のエラーダイアログ
-//            error();
+            // error();
 
         }else{
+            
             // データの反映 : add時の処理
             ArrayList<String> ret = new ArrayList<>();
             ret.add(id.getText());
@@ -223,6 +234,7 @@ class FileSystem extends JFrame {
 
             DefaultTableModel model = (DefaultTableModel)loadFieldTable.getModel();
             model.addRow(ret.toArray());
+            
         }
     }
 
@@ -258,35 +270,9 @@ class FileSystem extends JFrame {
         patientInformationPanelItem.add(birthdayLabel);
         patientInformationPanelItem.add(ageLabel);
         patientInformationPanelItem.add(dateLabel);
+        
         imageButton = new JButton("写真");
         patientInformationPanelItem.add(imageButton);
-
-        id = new JTextField("", 20);
-        patientInformationPanelField.add(id);
-        name = new JTextField("", 20);
-        patientInformationPanelField.add(name);
-        JPanel SexPanel = new JPanel();
-        SexPanel.setLayout(new GridLayout(1,2));
-        ButtonGroup sexGroup = new ButtonGroup();
-        men = new JRadioButton("男性");
-        woman = new JRadioButton("女性");
-        sexGroup.add(men);
-        sexGroup.add(woman);
-        SexPanel.add(men);
-        SexPanel.add(woman);
-        patientInformationPanelField.add(SexPanel);
-        birthday = new JTextField("", 20);
-        patientInformationPanelField.add(birthday);
-        age = new JTextField("", 20);
-        patientInformationPanelField.add(age);
-        date = new JTextField("", 20);
-        patientInformationPanelField.add(date);
-
-        DialogPanel.add(patientInformationPanelItem);
-        DialogPanel.add(patientInformationPanelField);
-        DialogPanelBase.add(DialogPanel);
-
-        // Dialog用のOverride
         imageButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -315,14 +301,43 @@ class FileSystem extends JFrame {
             }
         });
 
+        id = new JTextField("", 20);
+        patientInformationPanelField.add(id);
+        name = new JTextField("", 20);
+        patientInformationPanelField.add(name);
+        JPanel SexPanel = new JPanel();
+        SexPanel.setLayout(new GridLayout(1,2));
+        ButtonGroup sexGroup = new ButtonGroup();
+        men = new JRadioButton("男性");
+        woman = new JRadioButton("女性");
+        sexGroup.add(men);
+        sexGroup.add(woman);
+        SexPanel.add(men);
+        SexPanel.add(woman);
+        patientInformationPanelField.add(SexPanel);
+        birthday = new JTextField("", 20);
+        patientInformationPanelField.add(birthday);
+        age = new JTextField("", 20);
+        patientInformationPanelField.add(age);
+        date = new JTextField("", 20);
+        patientInformationPanelField.add(date);
+
+        DialogPanel.add(patientInformationPanelItem);
+        DialogPanel.add(patientInformationPanelField);
+        DialogPanelBase.add(DialogPanel);
+
         return DialogPanelBase;
+        
     }
 
     public PatientInformation copy() {
+        
        return getSelectedTableRow();
+    
     }
 
     public void paste(PatientInformation pasteInfo) {
+        
         int selectedRow = getSelectedRow();
         ArrayList<String> ret = new ArrayList<>();
         ret.add(pasteInfo.getId());
@@ -334,42 +349,50 @@ class FileSystem extends JFrame {
         ret.add(pasteInfo.getImage());
         DefaultTableModel model = (DefaultTableModel)loadFieldTable.getModel();
         model.insertRow(selectedRow + 1 , ret.toArray());
+        
     }
 
     public void copyPaste(boolean check){
+        
         if(check == true){
             pasteInfo = new PatientInformation();
             pasteInfo = copy();
         }else{
             paste(pasteInfo);
         }
+        
     }
 
     // セル内のパスを取得して画像を別ウィンドウで表示する
     public void imageOpen(String imagePath) {
+        
         JFrame frame = new JFrame("画像表示");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(500, 400);
-        imagePath = "C:\\Users\\y_hiraba\\Documents\\tmp\\images\\" + imagePath;
+        imagePath = imagePath; // 必要に応じてパスを追加する
         ImageIcon icon = new ImageIcon(imagePath);
         JLabel label = new JLabel(icon);
         frame.getContentPane().add(label);
         frame.setVisible(true);
+        
     }
 
     public void imageSelect(){
+        
         JPanel DialogPanelBase = createDialog();
         createShowConfirmDialog("画像の選択", DialogPanelBase);
+    
     }
 
     public FileSystem(){
+        
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("ファイルの読み書き");
         setBounds(200, 100, 680, 700); // 出力場所 (x, y, width, heigft);
 
         patientInformationArr = new ArrayList();
 
-        // Top Panelの設定-------------------------------------------------------
+        // Top Panelの設定
         JPanel TopPanel = new JPanel();
         patientPanelBase = new JPanel();
         patientPanel = new JPanel();
@@ -389,8 +412,8 @@ class FileSystem extends JFrame {
         TopPanel.add(selectButton);
 
         String[] charComboData = {"SJIS", "UTF-8"};
-        JComboBox charCode = new JComboBox(charComboData);
-        TopPanel.add(charCode);
+        JComboBox charSet = new JComboBox(charComboData);
+        TopPanel.add(charSet);
 
         TopPanel.add(patientPanelBase);
 
@@ -400,17 +423,16 @@ class FileSystem extends JFrame {
         ButtonPanel1.add(save);
         TopPanel.add(ButtonPanel1);
 
-        // Center Panelの設定----------------------------------------------------
+        // Center Panelの設定
         CenterPanel = new JPanel();
         loadFieldTable = new JTable();
         loadFieldTable.setDefaultEditor(Object.class, null); // セルの編集不可
-//        loadFieldTable.setAutoCreateRowSorter(true); // ソート機能 int型に対応していないのでまだ使えない。
         loadFieldTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane loadFieldTableScollpane = new JScrollPane(loadFieldTable);
         loadFieldTableScollpane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         CenterPanel.add(loadFieldTableScollpane);
 
-        // ポップアップ（右クリックメニュー）の設定----------------------------------
+        // 右クリックメニューの設定
         JPopupMenu submenuPopup;
         submenuPopup = new JPopupMenu();
         JMenuItem addMenuItem = new JMenuItem("追加");
@@ -426,17 +448,10 @@ class FileSystem extends JFrame {
         submenuPopup.addSeparator();
         submenuPopup.add(deleteMenuItem);
 
-        // BottomPanelの設定-----------------------------------------------------
+        // BottomPanelの設定
         JPanel BottomPanel = new JPanel();
 
-        // set Color-----------------------------------------------------
-//        ButtonPanel1.setBackground(new Color(140,140,140)); // set Color
-//        ButtonPanel2.setBackground(new Color(140,140,140)); // set Color
-//        TopPanel.setBackground(new Color(30,232,203)); // set Color
-//        CenterPanel.setBackground(new Color(30,232,203)); // set Color
-//        BottomPanel.setBackground(new Color(30,232,203)); // set Color
-
-        // 各Panelの表示---------------------------------------------------------
+        // 各Panelの表示
         Container contentPane = getContentPane();
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         contentPane.add(TopPanel);
@@ -444,9 +459,10 @@ class FileSystem extends JFrame {
         contentPane.add(submenuPopup);
         contentPane.add(BottomPanel);
 
-
-        // カラム設定------------------------------------------------------------
-        final String[] columnNames = {"ID", "氏名", "性別", "生年月日", "年齢", "追加日", "写真"}; // カラムを増やしたければここに追加するだけ
+        // カラム設定
+        
+        // カラムを増やしたければcolumnNamesに項目を追加してください
+        final String[] columnNames = {"ID", "氏名", "性別", "生年月日", "年齢", "追加日", "写真"};
         patientInformationModel = new DefaultTableModel(columnNames, 0);
         loadFieldTable.setModel(patientInformationModel);
         // カラム幅の設定
@@ -458,7 +474,7 @@ class FileSystem extends JFrame {
         loadFieldTable.getColumn("追加日").setPreferredWidth(150);
         loadFieldTable.getColumn("写真").setPreferredWidth(150);
 
-        // ボタン設定------------------------------------------------------------
+        // ボタン設定
         FileAccess fa = new FileAccess();
         FileCreate fc = new FileCreate();
 
@@ -682,13 +698,13 @@ class FileSystem extends JFrame {
             }
         });
 
-        // MouseEvent ----------------------------------------------------------
+        // MouseEvent
         loadFieldTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int btn = e.getButton();
                 if (btn == MouseEvent.BUTTON1){
-//                    System.out.println("左ボタンクリック");
+                    // System.out.println("左ボタンクリック");
                     if (e.getClickCount() == 1) {
                         patientPanel.removeAll();
                         PatientInformation info = getSelectedTableRow();
@@ -733,6 +749,7 @@ class FileSystem extends JFrame {
                     }
                 }
             }
+            
             public void mouseReleased(MouseEvent e){
               showPopup(e);
             }
@@ -743,7 +760,8 @@ class FileSystem extends JFrame {
 
             private void showPopup(MouseEvent e){
               if (e.isPopupTrigger()) {
-                /* ポップアップメニューを表示させる */
+                  
+                // ポップアップメニューを表示させる
                 submenuPopup.show(e.getComponent(), e.getX(), e.getY());
 
               }
@@ -753,9 +771,12 @@ class FileSystem extends JFrame {
         setVisible(true);
 
     }
+    
     // 行番号の取得
     private int getSelectedRow() {
+        
         return loadFieldTable.getSelectedRow();
+        
     }
 
     // 指定した行の情報を取得する
@@ -771,8 +792,9 @@ class FileSystem extends JFrame {
             ret.setDate((String)loadFieldTable.getValueAt(row, PatientInformation.COLUMN_DATE));
             ret.setImage((String)loadFieldTable.getValueAt(row, PatientInformation.COLUMN_IMAGE));
         }
-//        System.out.println(ret);
+
         return ret;
+        
     }
 
     // 選択している行を含んで行の情報を取得する
@@ -789,4 +811,5 @@ class FileSystem extends JFrame {
         }
         return ret;
     }
+    
 }
