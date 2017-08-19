@@ -47,25 +47,27 @@ public class FileAccess {
             File file = new File("");
 
             if(Path != "") {
-                    file = new File(Path);
+                file = new File(Path);
             }
 
-            FileInputStream input = new FileInputStream(file);
-            InputStreamReader stream = new InputStreamReader(input,"SJIS");
-
+            String charSet = "";
             if(combo == 0) {
-                stream = new InputStreamReader(input,"SJIS");
+                charSet = "SJIS";
             }else if(combo == 1) {
-                stream = new InputStreamReader(input,"UTF-8");
+                charSet = "UTF-8";
             }
-
+            
+            FileInputStream input = new FileInputStream(file);
+            InputStreamReader stream = new InputStreamReader(input,charSet);
             BufferedReader buffer = new BufferedReader(stream);
-            String ReadLine;
 
+            // 情報量が多くないので今回はreadLineで一行ごと読み込む
+            String ReadLine;
             while ((ReadLine = buffer.readLine()) != null) {
                 byte[] b = ReadLine.getBytes();
                 ReadLine = new String(b, "UTF-8");
                 String[] columns = fc.splitData(ReadLine);
+                
                 PatientInformation info = new PatientInformation();
                 info.setId(columns[PatientInformation.COLUMN_ID]);
                 info.setName(columns[PatientInformation.COLUMN_NAME]);
@@ -77,6 +79,8 @@ public class FileAccess {
                 columnsCsvArr.add(info);
             }
 
+            // 処理が増えてきたらtry-with-resorceで開放したほうが安全かも
+            // 今回は明示的に閉じる
             input.close();
             stream.close();
             buffer.close();
@@ -105,7 +109,7 @@ public class FileAccess {
                 pw.println(data);
             }
 
-            System.out.println("ファイルの出力が完了しました。");
+            System.out.println("ファイル出力が完了しました。");
             pw.close();
 
         } catch(Exception e) {
@@ -123,11 +127,17 @@ public class FileAccess {
         try{
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
-            if(convertXmlData != null) { // 読み込まれたファイルがcsvの場合xml形式に変換した文字列を渡してきている
+            if(convertXmlData != null) { 
+                
+                // csvの場合：xml形式に変換した文字列を渡してきている
                 sb = convertXmlData;
                 document = documentBuilder.parse(new InputSource(new ByteArrayInputStream(sb.toString().getBytes("UTF-8"))));
-            }else if(filePath != null) { // 読み込まれたファイルがxmlの場合filePathを渡してきている
+            
+            }else if(filePath != null) { 
+                
+                // xmlの場合：filePathを渡してきている
                 document = documentBuilder.parse(filePath); // ファイルディレクトリパスから直接ファイルを読み込む
+                
             }
 
             NodeList list = document.getElementsByTagName("person");
@@ -172,11 +182,11 @@ public class FileAccess {
             }
 
         } catch (FileNotFoundException ex) {
-//            Logger.getLogger(FileAccess.class.getName()).log(Level.SEVERE, null, ex);
+           Logger.getLogger(FileAccess.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnsupportedEncodingException ex) {
-//            Logger.getLogger(FileAccess.class.getName()).log(Level.SEVERE, null, ex);
+           Logger.getLogger(FileAccess.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-//            Logger.getLogger(FileAccess.class.getName()).log(Level.SEVERE, null, ex);
+           Logger.getLogger(FileAccess.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return xmlElement;
@@ -188,7 +198,7 @@ public class FileAccess {
             // 保存先のファイルパス
             File outputFile = new File("");
 
-            if(!"".equals(filePath)) {
+            if(!filePath.equals("")) {
                 outputFile = new File(filePath);
             }
 
@@ -201,7 +211,7 @@ public class FileAccess {
                 PrintWriter pw = new PrintWriter(osw);
                 pw.println(xmlSb);
                 pw.close();
-                System.out.println("ファイルの出力が完了しました。");
+                System.out.println("ファイル出力が完了しました。");
 
             } catch(Exception e) {
                 e.printStackTrace();
